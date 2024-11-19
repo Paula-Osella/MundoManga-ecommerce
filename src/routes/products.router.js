@@ -4,7 +4,6 @@ import ProductManager from "../services/ProductManager.js";
 const router = Router();
 const productManager = new ProductManager();
 
-
 // Listar productos
 router.get("/", async (req, res) => {
     try {
@@ -12,7 +11,7 @@ router.get("/", async (req, res) => {
         const products = await productManager.getAllProducts(limit);
         res.json(products);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).send('Error al obtener productos');
     }
 });
@@ -27,19 +26,19 @@ router.get('/:pid', async (req, res) => {
             return res.status(404).send('Producto no encontrado');
         }
 
-        res.json(product)
+        res.json(product);
     } catch (error) {
-        console.log(error);
-
+        console.error(error);
+        res.status(500).send('Error al obtener el producto');
     }
-})
+});
 
 // Crear producto
 router.post('/', async (req, res) => {
     try {
         const { title, description, code, price, stock, category, thumbnails } = req.body;
 
-        // Validar todos los campos 
+        // Validar que todos los campos obligatorios estén presentes
         if (!title || !description || !code || !price || !stock || !category) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios excepto thumbnails' });
         }
@@ -52,20 +51,22 @@ router.post('/', async (req, res) => {
         if (typeof stock !== 'number' || stock < 0) {
             return res.status(400).json({ error: 'El stock debe ser un número mayor o igual a 0' });
         }
+
         const newProduct = await productManager.addProduct({ title, description, code, price, stock, category, thumbnails });
         res.status(201).json(newProduct);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ error: 'Error al crear el producto' });
     }
 });
 
+// Actualizar producto por ID
 router.put('/:pid', async (req, res) => {
     try {
         const productId = parseInt(req.params.pid);
         const updatedFields = req.body;
 
-        // Validar que los campos sean correctos
+        // Validar que los campos actualizados sean correctos
         if (updatedFields.price && (typeof updatedFields.price !== 'number' || updatedFields.price <= 0)) {
             return res.status(400).json({ error: 'El precio debe ser un número positivo' });
         }
@@ -81,15 +82,16 @@ router.put('/:pid', async (req, res) => {
             res.status(404).json({ error: 'Producto no encontrado' });
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ error: 'Error al actualizar el producto' });
     }
-})
+});
 
 // Eliminar producto por ID
 router.delete('/:pid', async (req, res) => {
     try {
         const productId = parseInt(req.params.pid);
+
         // Validar que el ID del producto sea válido
         if (isNaN(productId) || productId <= 0) {
             return res.status(400).json({ error: 'ID de producto inválido' });
@@ -102,8 +104,10 @@ router.delete('/:pid', async (req, res) => {
             res.status(404).json({ error: 'Producto no encontrado' });
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        res.status(500).json({ error: 'Error al eliminar el producto' });
     }
-})
+});
 
 export default router;
+

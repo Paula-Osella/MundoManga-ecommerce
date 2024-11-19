@@ -1,6 +1,6 @@
 import express from 'express';
 import productsRouter from './routes/products.router.js';
-import cartRouter from './routes/cart.router.js'; // Importa el cartRouter
+import cartRouter from './routes/cart.router.js'; 
 
 const app = express();
 
@@ -16,11 +16,6 @@ app.use('/api/products', productsRouter)
 
 app.use('/api/carts', cartRouter);  
 
-// Server
-const PORT = 8080;
-app.listen(PORT, () => {
-    console.log('Servidor escuchando en el puerto ' + PORT);
-});
 
 // Middleware para manejar errores
 app.use((err, req, res, next) => {
@@ -32,3 +27,11 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
     res.status(404).json({ error: 'Ruta no encontrada' });
 });
+
+
+// Server
+const PORT = 8080;
+app.listen(PORT, () => {
+    console.log('Servidor escuchando en el puerto ' + PORT);
+});
+
