@@ -50,11 +50,15 @@
       "phone": 1528,
       "dni": 6546421
     },
-    "products": [
-      {
-        "productId": "2de99c54-f3ca-4c53-a42d-279588cf307e",
-        "quantity": 8
-      }
-    ]
+    "products": []
+  },
+  {
+    "id": "d71ffb14-cf3d-41a2-8619-628a6b346b2d",
+    "user": {
+      "name": "Paula",
+      "phone": 1528,
+      "dni": 6546421
+    },
+    "products": []
   }
 ]

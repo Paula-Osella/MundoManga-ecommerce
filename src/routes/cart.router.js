@@ -74,7 +74,7 @@ router.delete('/:cid', async (req, res) => {
     const { cid } = req.params;
 
     try {
-        const updatedCarts = await cartManager.removeCart(cid);
+        const updatedCarts = await cartManager.removeCart(cid); // Aquí se usa removeCart
         if (updatedCarts) {
             res.status(200).json({ message: 'Carrito eliminado correctamente', carts: updatedCarts });
         } else {

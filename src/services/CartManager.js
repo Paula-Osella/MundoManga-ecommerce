@@ -107,6 +107,19 @@ async removeProductFromCart(cartId, productId) {
     return cart; // Retorna el carrito actualizado
 }
 
+// Eliminar un carrito completo
+async removeCart(cartId) {
+    const cartIndex = this.carts.findIndex(cart => cart.id === cartId);
+    if (cartIndex === -1) {
+        throw new Error('Carrito no encontrado');
+    }
+
+    // Eliminar el carrito
+    this.carts.splice(cartIndex, 1);
+    await this.saveCartsToFile();
+    return this.carts; // Retorna la lista de carritos actualizada
+}
+
 }
 
 export default CartManager;

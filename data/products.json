@@ -1,80 +1,80 @@
 [
-    {
-        "id": 2,
-        "title": "Berserk Arco de los niños perdidos",
-        "description": "En el tomo 27.",
-        "code": "PAMIS01",
-        "price": 30,
-        "stock": 500,
-        "category": "Acción, fantasía oscura",
-        "thumbnails": [
-            "https://example.com/images/Berserk.jpg"
-        ],
-        "status": true
-    },
-    {
-        "id": 3,
-        "title": "Dragon Ball Z - La batalla final",
-        "description": "El gran enfrentamiento de Goku y Freezer.",
-        "code": "DBZ01",
-        "price": 12,
-        "stock": 100,
-        "category": "Acción, aventura",
-        "thumbnails": [
-            "https://example.com/images/DragonBallZ.jpg"
-        ],
-        "status": true
-    },
-    {
-        "id": 4,
-        "title": "One Piece - La aventura comienza",
-        "description": "Luffy y su tripulación en su viaje por el mar.",
-        "code": "OP01",
-        "price": 18,
-        "stock": 50,
-        "category": "Aventura, piratas",
-        "thumbnails": [
-            "https://example.com/images/OnePiece.jpg"
-        ],
-        "status": true
-    },
-    {
-        "id": 5,
-        "title": "Naruto - El ascenso del ninja",
-        "description": "Naruto busca convertirse en Hokage.",
-        "code": "NAR01",
-        "price": 14,
-        "stock": 75,
-        "category": "Acción, ninjas",
-        "thumbnails": [
-            "https://example.com/images/Naruto.jpg"
-        ],
-        "status": true
-    },
-    {
-        "id": 7,
-        "title": "ranma 1/2",
-        "description": "tomo 10.",
-        "code": "PAMIS09",
-        "price": 25,
-        "stock": 70,
-        "category": "romance",
-        "thumbnails": [
-            "https://example.com/images/ranma.jpg"
-        ],
-        "status": true
-    },
-    {
-        "id": "2de99c54-f3ca-4c53-a42d-279588cf307e",
-        "title": "ranma 1/2",
-        "description": "tomo 10.",
-        "code": "PAMIS09",
-        "price": 25,
-        "stock": 70,
-        "category": "romance",
-        "thumbnails": [
-            "https://example.com/images/ranma.jpg"
-        ],
-        "status": true
-    }
+  {
+    "id": 2,
+    "title": "Berserk Arco de los niños perdidos",
+    "description": "En el tomo 27.",
+    "code": "PAMIS01",
+    "price": 10,
+    "stock": 50,
+    "category": "Acción, fantasía oscura",
+    "thumbnails": [
+      "https://example.com/images/Berserk.jpg"
+    ],
+    "status": true
+  },
+  {
+    "id": 3,
+    "title": "Dragon Ball Z - La batalla final",
+    "description": "El gran enfrentamiento de Goku y Freezer.",
+    "code": "DBZ01",
+    "price": 12,
+    "stock": 100,
+    "category": "Acción, aventura",
+    "thumbnails": [
+      "https://example.com/images/DragonBallZ.jpg"
+    ],
+    "status": true
+  },
+  {
+    "id": 4,
+    "title": "One Piece - La aventura comienza",
+    "description": "Luffy y su tripulación en su viaje por el mar.",
+    "code": "OP01",
+    "price": 18,
+    "stock": 50,
+    "category": "Aventura, piratas",
+    "thumbnails": [
+      "https://example.com/images/OnePiece.jpg"
+    ],
+    "status": true
+  },
+  {
+    "id": 5,
+    "title": "Naruto - El ascenso del ninja",
+    "description": "Naruto busca convertirse en Hokage.",
+    "code": "NAR01",
+    "price": 14,
+    "stock": 75,
+    "category": "Acción, ninjas",
+    "thumbnails": [
+      "https://example.com/images/Naruto.jpg"
+    ],
+    "status": true
+  },
+  {
+    "id": "2de99c54-f3ca-4c53-a42d-279588cf307e",
+    "title": "ranma 1/2",
+    "description": "tomo 10.",
+    "code": "PAMIS09",
+    "price": 25,
+    "stock": 70,
+    "category": "romance",
+    "thumbnails": [
+      "https://example.com/images/ranma.jpg"
+    ],
+    "status": true
+  },
+  {
+    "id": "290dabd6-8a93-4c63-a224-236c8023881e",
+    "title": "ranma 1/2",
+    "description": "tomo 10.",
+    "code": "PAMIS09",
+    "price": 150,
+    "stock": 70,
+    "category": "romance",
+    "thumbnails": [
+      "https://example.com/images/ranma.jpg"
+    ],
+    "status": true
+  }
 ]
