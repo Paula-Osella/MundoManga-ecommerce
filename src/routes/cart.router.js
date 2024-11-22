@@ -6,13 +6,8 @@ const cartManager = new CartManager();
 
 // Crear un carrito
 router.post('/', async (req, res) => {
-    const { name, phone, dni } = req.body;
-    if (!name || !phone || !dni) {
-        return res.status(400).json({ message: 'Faltan datos del usuario' });
-    }
-
     try {
-        const newCart = await cartManager.createCart({ name, phone, dni });
+        const newCart = await cartManager.createCart();
         res.status(201).json({ message: 'Carrito creado con éxito', cart: newCart });
     } catch (error) {
         console.error('Error al crear el carrito:', error);
@@ -77,12 +72,8 @@ router.delete('/:cid', async (req, res) => {
     const { cid } = req.params;
 
     try {
-        const updatedCarts = await cartManager.removeCart(cid);
-        if (updatedCarts) {
-            res.status(200).json({ message: 'Carrito eliminado correctamente', carts: updatedCarts });
-        } else {
-            res.status(404).json({ message: 'Carrito no encontrado' });
-        }
+        const result = await cartManager.removeCart(cid);
+        res.status(200).json(result);
     } catch (error) {
         console.error('Error al eliminar el carrito:', error);
         res.status(500).json({ message: error.message });
