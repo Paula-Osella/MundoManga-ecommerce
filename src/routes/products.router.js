@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 // Obtener producto por ID
 router.get('/:pid', async (req, res) => {
     try {
-        const productId = parseInt(req.params.pid);
+        const productId = req.params.pid;
         const product = await productManager.getProductById(productId);
 
         if (!product) {
@@ -63,7 +63,7 @@ router.post('/', async (req, res) => {
 // Actualizar producto por ID
 router.put('/:pid', async (req, res) => {
     try {
-        const productId = parseInt(req.params.pid);
+        const productId = req.params.pid;
         const updatedFields = req.body;
 
         // Validar que los campos actualizados sean correctos
@@ -90,10 +90,10 @@ router.put('/:pid', async (req, res) => {
 // Eliminar producto por ID
 router.delete('/:pid', async (req, res) => {
     try {
-        const productId = parseInt(req.params.pid);
+        const productId = req.params.pid; 
 
         // Validar que el ID del producto sea válido
-        if (isNaN(productId) || productId <= 0) {
+        if (!productId || typeof productId !== 'string' || productId.trim().length === 0) {
             return res.status(400).json({ error: 'ID de producto inválido' });
         }
 
@@ -108,6 +108,7 @@ router.delete('/:pid', async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar el producto' });
     }
 });
+
 
 export default router;
 

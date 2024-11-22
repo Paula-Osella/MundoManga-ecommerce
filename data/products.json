@@ -76,5 +76,18 @@
       "https://example.com/images/ranma.jpg"
     ],
     "status": true
+  },
+  {
+    "id": "46581c6a-875b-4961-b856-7791efffc716",
+    "title": "Berserk",
+    "description": "tomo 15",
+    "code": "PAMIS09",
+    "price": 150,
+    "stock": 70,
+    "category": "terror",
+    "thumbnails": [
+      "https://example.com/images/ranma.jpg"
+    ],
+    "status": true
   }
 ]

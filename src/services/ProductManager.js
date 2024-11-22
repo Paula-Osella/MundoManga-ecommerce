@@ -49,20 +49,18 @@ export default class ProductManager {
         return newProduct;
     }
 
-    // Actualizar producto
     async updateProduct(id, updatedFields) {
-        const productIndex = this.products.findIndex(product => product.id === id);
+        const productIndex = this.products.findIndex(product => product.id === id);  // id ya es un string
         if (productIndex === -1) return null;
-
+    
         const updatedProduct = {
             ...this.products[productIndex],
             ...updatedFields,
-            id: this.products[productIndex].id,
+            id: this.products[productIndex].id,  
         };
-
-
+    
         this.products[productIndex] = updatedProduct;
-        this.saveToFile()
+        this.saveToFile();  
         return updatedProduct;
     }
 
@@ -70,11 +68,10 @@ export default class ProductManager {
     deleteProduct(id) {
         const productIndex = this.products.findIndex(product => product.id === id);
         if (productIndex === -1) return null;
-
+    
         const deletedProduct = this.products.splice(productIndex, 1);
-        this.saveToFile()
+        this.saveToFile();
         return deletedProduct[0];
-
     }
 }
 
