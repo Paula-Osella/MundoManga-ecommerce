@@ -28,6 +28,7 @@ export default class ProductManager {
 
     async saveToFile() {
         const jsonData = JSON.stringify(this.products, null, 2);
+        console.log("Guardando productos en JSON...");
         await fs.writeFile(productosFilePath, jsonData);
     }
 
@@ -50,7 +51,7 @@ export default class ProductManager {
     }
 
     async updateProduct(id, updatedFields) {
-        const productIndex = this.products.findIndex(product => product.id === id);  // id ya es un string
+        const productIndex = this.products.findIndex(product => product.id === id);  
         if (productIndex === -1) return null;
     
         const updatedProduct = {
@@ -73,6 +74,8 @@ export default class ProductManager {
         this.saveToFile();
         return deletedProduct[0];
     }
+    
+
 }
 
 

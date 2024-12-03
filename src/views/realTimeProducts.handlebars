@@ -1,0 +1,74 @@
+<header>
+    <div class="title">
+        <h2>Mundo Manga<br><span class="destacar">en Tiempo Real</span><br>
+        </h2>
+    </div>
+</header>
+
+<main>
+
+        <section>
+        <h3>Agregar Producto</h3>
+        <form id="add-product-form">
+            <label for="product-category">Categoría</label>
+            <input type="text" id="product-category" />
+
+            <label for="product-code">Código del Producto</label>
+            <input type="text" id="product-code" required />
+
+            <label for="product-title">Título</label>
+            <input type="text" id="product-title" required />
+
+            <label for="product-thumbnail">Imagen</label>
+            <input type="file" id="product-thumbnail" alt="Imagen" accept="image/*" />
+
+            <label for="product-description">Descripción</label>
+            <textarea id="product-description" required></textarea>
+
+            <label for="product-price">Precio</label>
+            <input type="number" id="product-price" required />
+
+            <label for="product-stock">Stock</label>
+            <input type="number" id="product-stock" required />
+
+            <label for="product-status">Estado</label>
+            <input type="checkbox" id="product-status" checked />
+
+            <button type="submit">Agregar Producto</button>
+        </form>
+    </section>
+    <p class="error-message" id="error-message"></p>
+    <p class="success-message" id="success-message"></p>
+    <div id="message-container"></div>
+
+
+    <section>
+        <h3>Catalogo</h3>
+        <div class="products">
+            <div class="products__list">
+                <ul class="products__list__item" id="products-list"></ul>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <section>
+        <form id="category-filter-form">
+        </form>
+
+        <a href="/" id="real-time-products-link">Volver a ver Productos</a>
+    </section>
+
+    <section id="product-details-section" style="display: none;">
+        <h3>Detalles del Producto</h3>
+        <div id="product-details"></div>
+        <button id="back-to-products-list">Volver a la Lista de Productos</button>
+    </section>
+
+
+</main>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/realTimeProducts.js"></script>
