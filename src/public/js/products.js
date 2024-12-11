@@ -1,4 +1,21 @@
 const createProductHTML = (product) => {
+
+  const socket = io(); 
+
+
+socket.on("filtered-products", (data) => {
+    const { products } = data;
+    const productsList = document.getElementById("products-list");
+    productsList.innerHTML = ""; 
+
+
+    products.forEach((product) => {
+        productsList.innerHTML += createProductHTML(product);
+    });
+
+    attachListenersToButtons(); 
+});
+
   const productImage = product.thumbnails?.length
     ? `<img src="${product.thumbnails[0]}" alt="Imagen de ${product.title}" style="width: 50px;">`
     : "";

@@ -7,7 +7,7 @@ export const config = (httpServer) => {
     const socketServer = new Server(httpServer);
 
     socketServer.on("connection", async (socket) => {
-        console.log("La conexión está establecida!", socket.id);
+
 
         socket.emit("filtered-products", {
             products: await productManager.getAllProducts(),
@@ -151,8 +151,7 @@ export const config = (httpServer) => {
             }
         });
 
-        socket.on("disconnect", () => {
-            console.log("El cliente se desconectó...");
-        });
     });
+    
+    
 };
