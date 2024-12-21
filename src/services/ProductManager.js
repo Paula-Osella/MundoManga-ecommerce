@@ -1,82 +1,112 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
 
-const productosFilePath = path.resolve('data', 'products.json');
+
+import ProductModel from "../models/product.model.js";
+import mongoose from 'mongoose';
 
 export default class ProductManager {
-    constructor() {
-        this.products = [];
-        this.init();
-    }
 
-    async init() {
+
+    async getAllProducts({ limit = 10, page = 1, sort = 'asc', query = {} }) {
         try {
-            const data = await fs.readFile(productosFilePath, 'utf-8');
-            this.products = JSON.parse(data);
+
+            const options = {
+                page,
+                limit,
+                sort: { price: sort === 'asc' ? 1 : -1 },
+                lean: true,
+            };
+
+
+            const result = await ProductModel.paginate(query, options);
+
+
+            return {
+                status: 'success',
+                payload: result.docs,
+                totalPages: result.totalPages,
+                prevPage: result.prevPage,
+                nextPage: result.nextPage,
+                page: result.page,
+                hasPrevPage: result.hasPrevPage,
+                hasNextPage: result.hasNextPage,
+                prevLink: result.hasPrevPage ? `/products?page=${result.prevPage}&limit=${limit}&sort=${sort}&query=${JSON.stringify(query)}` : null,
+                nextLink: result.hasNextPage ? `/products?page=${result.nextPage}&limit=${limit}&sort=${sort}&query=${JSON.stringify(query)}` : null
+            };
         } catch (error) {
-            this.products = [];
+            console.error('Error al obtener productos', error);
+            throw new Error('Error al obtener productos');
         }
     }
 
-    async getAllProducts(limit) {
-        if (limit) {
-            return this.products.slice(0, limit);
+
+    async getProductById(id) {
+        try {
+            const product = await ProductModel.findById(id);
+            if (!product) throw new Error('Producto no encontrado');
+            return product;
+        } catch (error) {
+            throw new Error('Producto no encontrado');
         }
-        return this.products;
     }
 
-    async saveToFile() {
-        const jsonData = JSON.stringify(this.products, null, 2);
-        console.log("Guardando productos en JSON...");
-        await fs.writeFile(productosFilePath, jsonData);
+
+    async getProductsByCategory(categoryName) {
+        try {
+            const products = await ProductModel.find({ category: categoryName });
+            return products;
+        } catch (error) {
+            console.error('Error al obtener productos por categoría', error);
+            throw new Error('Error al obtener productos por categoría');
+        }
     }
 
-    getProductById(id) {
-        return this.products.find(product => product.id === id);
+
+    async addProduct(productData) {
+        try {
+            const newProduct = new ProductModel(productData);
+            await newProduct.save();
+            return newProduct;
+        } catch (error) {
+            console.error('Error al agregar producto:', error.message);
+            if (error.name === 'ValidationError') {
+                throw new Error(`Error de validación: ${error.message}`);
+            }
+            throw new Error('Error al agregar producto');
+        }
     }
 
-    async addProduct(product) {
-        const newProduct = {
-            id: uuidv4(),
-            ...product,
-            status: true,
-        };
-
-        this.products.push(newProduct);
-        // Guardar los cambios en el archivo
-        await this.saveToFile();
-
-        return newProduct;
-    }
 
     async updateProduct(id, updatedFields) {
-        const productIndex = this.products.findIndex(product => product.id === id);  
-        if (productIndex === -1) return null;
-    
-        const updatedProduct = {
-            ...this.products[productIndex],
-            ...updatedFields,
-            id: this.products[productIndex].id,  
-        };
-    
-        this.products[productIndex] = updatedProduct;
-        this.saveToFile();  
-        return updatedProduct;
+        try {
+
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                throw new Error('ID de producto no válido');
+            }
+
+            const updatedProduct = await ProductModel.findByIdAndUpdate(id, updatedFields, { new: true });
+            if (!updatedProduct) {
+                throw new Error('Producto no encontrado');
+            }
+
+            return updatedProduct;
+        } catch (error) {
+            console.error('Error al actualizar producto:', error.message);
+            throw new Error(error.message);
+        }
     }
 
-    // Eliminar producto
-    deleteProduct(id) {
-        const productIndex = this.products.findIndex(product => product.id === id);
-        if (productIndex === -1) return null;
-    
-        const deletedProduct = this.products.splice(productIndex, 1);
-        this.saveToFile();
-        return deletedProduct[0];
-    }
-    
 
+
+    async deleteProduct(id) {
+        try {
+            const deletedProduct = await ProductModel.findByIdAndDelete(id);
+            if (!deletedProduct) throw new Error('Producto no encontrado');
+            return deletedProduct;
+        } catch (error) {
+            console.error('Error al eliminar producto', error);
+            throw new Error('Error al eliminar producto');
+        }
+    }
 }
-
 
 

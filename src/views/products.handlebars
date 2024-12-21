@@ -1,0 +1,59 @@
+
+<form method="get" action="/products">
+    <input type="text" name="search" placeholder="Buscar por nombre" value="{{search}}" />
+<select name="category">
+        <option value="">Filtrar por categoría</option>
+        <option value="Shonen" {{#if (eq category "Shonen")}}selected{{/if}}>Shonen</option>
+        <option value="Seinen" {{#if (eq category "Seinen")}}selected{{/if}}>Seinen</option>
+        <option value="Drama" {{#if (eq category "Drama")}}selected{{/if}}>Drama</option>
+    </select>
+
+
+    <select name="sort">
+        <option value="">Ordenar por precio</option>
+        <option value="asc" {{#if (eq sort "asc")}}selected{{/if}}>Precio Menor</option>
+        <option value="desc" {{#if (eq sort "desc")}}selected{{/if}}>Precio Mayor</option>
+    </select>
+
+    <button type="submit">Buscar</button>
+</form>
+
+{{#if message}}
+    <div class="alert alert-warning">
+        {{message}}
+    </div>
+{{/if}}
+
+
+{{#if isValid}}
+<div>
+    {{#each docs}}
+    <div class="product-card">
+        <h3>{{this.title}}</h3>
+        <p>Descripción: {{this.description}}</p>
+        <p>Precio: ${{this.price}}</p>
+        <p>Stock: {{this.stock}}</p>
+        <button class="add-to-cart" data-id="{{this._id}}">Agregar al carrito</button>
+    </div>
+    <br />
+    {{/each}}
+</div>
+
+
+<div>
+    {{#if prevLink}}
+    <a href="{{prevLink}}"><< Anterior</a>
+    {{/if}}
+
+
+    &nbsp; Página {{this.page}} &nbsp;
+
+    {{#if nextLink}}
+    <a href="{{nextLink}}">Siguiente >></a>
+    {{/if}}
+</div>
+{{else}}
+<h1>No hay productos para mostrar</h1>
+{{/if}}
+
+

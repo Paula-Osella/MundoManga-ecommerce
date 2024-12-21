@@ -1,17 +1,32 @@
 import { Router } from "express";
 import ProductManager from "../services/ProductManager.js";
 
-const router = Router();
-const productManager = new ProductManager();
 
-// Listar productos
-router.get("/", async (req, res) => {
+ const router = Router();
+ const productManager = new ProductManager();
+// Listar productos con filtros, paginación y ordenamiento
+router.get('/', async (req, res) => {
     try {
-        const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
-        const products = await productManager.getAllProducts(limit);
-        res.json(products);
+        console.log('Solicitud recibida en GET /');
+        const { limit = 10, page = 1, sort = 'asc', category, status } = req.query;
+        console.log('Parámetros de consulta:', { limit, page, sort, category, status });
+
+        let query = {};
+        if (category) query.category = category;
+        if (status) query.status = status === 'true'; // Convertir a booleano
+        console.log('Filtros de búsqueda:', query);
+
+        const result = await productManager.getAllProducts({
+            limit: parseInt(limit),
+            page: parseInt(page),
+            sort,
+            query
+        });
+        console.log('Productos obtenidos:', result);
+
+        res.json(result);
     } catch (error) {
-        console.error(error);
+        console.error('Error en GET /:', error);
         res.status(500).send('Error al obtener productos');
     }
 });
@@ -20,95 +35,87 @@ router.get("/", async (req, res) => {
 router.get('/:pid', async (req, res) => {
     try {
         const productId = req.params.pid;
-        const product = await productManager.getProductById(productId);
+        console.log('Solicitud recibida en GET /:pid con ID:', productId);
 
-        if (!product) {
-            return res.status(404).send('Producto no encontrado');
-        }
+        const product = await productManager.getProductById(productId);
+        console.log('Producto encontrado:', product);
 
         res.json(product);
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al obtener el producto');
+        console.error('Error en GET /:pid:', error);
+        res.status(404).json({ error: 'Producto no encontrado' });
+    }
+});
+
+// Ruta para obtener productos por categoría
+router.get('/category/:categoryName', async (req, res) => {
+    try {
+        const categoryName = req.params.categoryName;
+        console.log('Solicitud recibida para obtener productos de la categoría:', categoryName);
+
+        const productsByCategory = await productManager.getProductsByCategory(categoryName);
+        if (productsByCategory.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron productos en esta categoría' });
+        }
+
+        res.json(productsByCategory);
+    } catch (error) {
+        console.error('Error al obtener productos por categoría:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
 // Crear producto
 router.post('/', async (req, res) => {
     try {
-        const { title, description, code, price, stock, category, thumbnails } = req.body;
+        const { title, description, code, price, stock, category, author, status, thumbnails } = req.body;
 
-        // Validar que todos los campos obligatorios estén presentes
-        if (!title || !description || !code || !price || !stock || !category) {
-            return res.status(400).json({ error: 'Todos los campos son obligatorios excepto thumbnails' });
+        // Validar campos obligatorios
+        if (!title || !description || !code || !price || !stock || !category || !author) {
+            return res.status(400).json({ error: 'Todos los campos obligatorios deben ser proporcionados' });
         }
 
-        // Validar tipo de datos
-        if (typeof price !== 'number' || price <= 0) {
-            return res.status(400).json({ error: 'El precio debe ser un número positivo' });
-        }
-
-        if (typeof stock !== 'number' || stock < 0) {
-            return res.status(400).json({ error: 'El stock debe ser un número mayor o igual a 0' });
-        }
-
-        const newProduct = await productManager.addProduct({ title, description, code, price, stock, category, thumbnails });
+        // Crear el producto
+        const newProduct = await productManager.addProduct({ title, description, code, price, stock, category, author, status, thumbnails });
         res.status(201).json(newProduct);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al crear el producto' });
+        console.error('Error al crear producto:', error.message);
+        res.status(500).json({ error: error.message || 'Ocurrió un error en el servidor' });
     }
 });
 
-// Actualizar producto por ID
+
+// Actualizar producto
 router.put('/:pid', async (req, res) => {
     try {
-        const productId = req.params.pid;
-        const updatedFields = req.body;
+        const productId = req.params.pid; // ID recibido de la URL
+        const updatedFields = req.body;  // Campos a actualizar
 
-        // Validar que los campos actualizados sean correctos
-        if (updatedFields.price && (typeof updatedFields.price !== 'number' || updatedFields.price <= 0)) {
-            return res.status(400).json({ error: 'El precio debe ser un número positivo' });
-        }
+        const updatedProduct = await productManager.updateProduct(productId, updatedFields); // Llama al manager
 
-        if (updatedFields.stock && (typeof updatedFields.stock !== 'number' || updatedFields.stock < 0)) {
-            return res.status(400).json({ error: 'El stock debe ser un número mayor o igual a 0' });
-        }
-
-        const updatedProduct = await productManager.updateProduct(productId, updatedFields);
-        if (updatedProduct) {
-            res.json(updatedProduct);
-        } else {
-            res.status(404).json({ error: 'Producto no encontrado' });
-        }
+        res.json(updatedProduct); // Envía el producto actualizado como respuesta
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al actualizar el producto' });
+        console.error('Error en PUT /:pid:', error.message);
+        res.status(400).json({ error: error.message }); // Devuelve el mensaje de error
     }
 });
 
-// Eliminar producto por ID
+
+
+// Eliminar producto
 router.delete('/:pid', async (req, res) => {
     try {
-        const productId = req.params.pid; 
-
-        // Validar que el ID del producto sea válido
-        if (!productId || typeof productId !== 'string' || productId.trim().length === 0) {
-            return res.status(400).json({ error: 'ID de producto inválido' });
-        }
+        const productId = req.params.pid;
+        console.log('Solicitud recibida en DELETE /:pid con ID:', productId);
 
         const deletedProduct = await productManager.deleteProduct(productId);
-        if (deletedProduct) {
-            res.json(deletedProduct);
-        } else {
-            res.status(404).json({ error: 'Producto no encontrado' });
-        }
+        console.log('Producto eliminado:', deletedProduct);
+
+        res.json(deletedProduct);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al eliminar el producto' });
+        console.error('Error en DELETE /:pid:', error);
+        res.status(404).json({ error: 'Producto no encontrado' });
     }
 });
 
-
 export default router;
-
