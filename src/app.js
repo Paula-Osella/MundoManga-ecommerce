@@ -2,7 +2,7 @@ import express from 'express';
 import handlebars from 'express-handlebars';
 import productsRouter from './routes/products.router.js';
 import cartRouter from './routes/cart.router.js';
-import __dirname from './utils.js';  // Asegúrate de que el archivo 'utils.js' esté bien exportado
+import __dirname from './utils.js';  
 import homeViewRouter from './routes/homeViewRouter.js';
 import { connectDB } from "./config/mongoose.config.js";
 
@@ -59,7 +59,7 @@ app.use((req, res) => {
 });
 
 
-const PORT = 8080;
+const PORT = 8090;
 const httpServer = app.listen(PORT, () => {
     console.log(`Ejecutándose en http://localhost:${PORT}`);
 });

@@ -41,29 +41,30 @@ class CartManager {
     }
 
     async removeProductFromCart(cartId, productId) {
-        const cart = await CartModel.findById(cartId);
+        // Buscar el carrito y hacer populate para obtener los productos completos
+        const cart = await CartModel.findById(cartId).populate('products.product'); 
+    
         if (!cart) {
             throw new Error('Carrito no encontrado');
         }
-
-        const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
+    
+        console.log('Buscando producto con ID:', productId);
+        console.log('Productos en el carrito:', cart.products.map(p => p.product._id.toString()));
+    
+        // Comparar asegurando que la comparación sea con el tipo adecuado
+        const productIndex = cart.products.findIndex(p => p.product._id.toString() === productId.toString());
+    
         if (productIndex === -1) {
             throw new Error('Producto no encontrado en el carrito');
         }
-
+    
+        // Eliminar el producto del carrito y guardar los cambios
         cart.products.splice(productIndex, 1);
         await cart.save();
         return cart;
     }
-
-    async removeCart(cartId) {
-        const cart = await CartModel.findByIdAndDelete(cartId);
-        if (!cart) {
-            throw new Error('Carrito no encontrado');
-        }
-
-        return { message: 'Carrito eliminado correctamente', cart };
-    }
+    
+    
 
     async getCartById(cartId) {
         const cart = await CartModel.findById(cartId).populate('products.product'); 

@@ -1,9 +1,7 @@
-
-
 import ProductModel from "../models/product.model.js";
 import mongoose from 'mongoose';
 
-export default class ProductManager {
+class ProductManager {
 
 
     async getAllProducts({ limit = 10, page = 1, sort = 'asc', query = {} }) {
@@ -110,3 +108,4 @@ export default class ProductManager {
 }
 
 
+export default new ProductManager(); 

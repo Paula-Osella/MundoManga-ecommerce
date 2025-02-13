@@ -1,6 +1,5 @@
-
 import { Router } from 'express';
-import CartManager from '../services/CartManager.js';
+import CartManager from '../manager/CartManager.js';
 const router = Router();
 const cartManager = new CartManager();
 
@@ -76,6 +75,7 @@ router.delete('/:cid/products/:pid', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 // Eliminar un carrito completo
 router.delete('/:cid', async (req, res) => {
