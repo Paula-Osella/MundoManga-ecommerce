@@ -1,10 +1,25 @@
+
+
+import {dirname} from 'path';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+export const __dirname = dirname(fileURLToPath(import.meta.url));
+
+import bcrypt from 'bcrypt';
 
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+/**
+ * funcion que realiza el encriptado de contraseña a través de bcrypt con el método hashSync. 
+ * Recibe password sin encriptar,
+ * retorna password encriptada
+ * @param password tipo string
+ * @returns password encriptada/hasheada
+ */
+export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
-
-export default __dirname
-
+/**
+ * 
+ * @param {*} user usuario encontrado en base de datos.
+ * @param {*} password contraseña proporcionada por el usuario, sin encriptar.
+ * @returns boolean
+ */
+export const isValidPassword = (password, user) => bcrypt.compareSync(password, user.password);

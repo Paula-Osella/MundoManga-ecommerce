@@ -1,108 +1,63 @@
-import ProductManager from '../manager/ProductManager.js';
+import { prodService } from "../services/product.services.js";
 
-
-export const getAllProducts =async (req,res)=>{
+// Controlador para obtener todos los productos
+export const getAllProducts = async (req, res) => {
     try {
-        console.log('Solicitud recibida en GET /');
-        const { limit = 10, page = 1, sort = 'asc', category, status } = req.query;
-        console.log('Parámetros de consulta:', { limit, page, sort, category, status });
-
-        let query = {};
-        if (category) query.category = category;
-        if (status) query.status = status === 'true'; // Convertir a booleano
-        console.log('Filtros de búsqueda:', query);
-
-        const result = await ProductManager.getAllProducts({
-            limit: parseInt(limit),
-            page: parseInt(page),
-            sort,
-            query
-        });
-        console.log('Productos obtenidos:', result);
-
-        res.json(result);
+        const products = await prodService.getAll();
+        res.status(200).json(products);
     } catch (error) {
-        console.error('Error en GET /:', error);
-        res.status(500).send('Error al obtener productos');
+        res.status(500).json({ error: error.message });
     }
-}
+};
 
-export const getProductById = async (req,res) =>{
+// Controlador para obtener un producto por ID
+export const getProductById = async (req, res) => {
     try {
-        const productId = req.params.pid;
-        console.log('Solicitud recibida en GET /:pid con ID:', productId);
-
-        const product = await ProductManager.getProductById(productId);
-        console.log('Producto encontrado:', product);
-
-        res.json(product);
-    } catch (error) {
-        console.error('Error en GET /:pid:', error);
-        res.status(404).json({ error: 'Producto no encontrado' });
-    }
-}
-
-
-export const getProductsByCategory = async(req,res)=>{
-    try {
-        const categoryName = req.params.categoryName;
-        console.log('Solicitud recibida para obtener productos de la categoría:', categoryName);
-
-        const productsByCategory = await ProductManager.getProductsByCategory(categoryName);
-        if (productsByCategory.length === 0) {
-            return res.status(404).json({ error: 'No se encontraron productos en esta categoría' });
+        const { pid } = req.params;
+        const product = await prodService.getById(pid);
+        if (!product) {
+            return res.status(404).json({ message: "Producto no encontrado" });
         }
-
-        res.json(productsByCategory);
+        res.status(200).json(product);
     } catch (error) {
-        console.error('Error al obtener productos por categoría:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ error: error.message });
     }
-}
+};
 
-export const addProduct = async (req,res)=>{
+// Controlador para crear un nuevo producto
+export const createProduct = async (req, res) => {
     try {
-        const { title, description, code, price, stock, category, author, status, thumbnails } = req.body;
-
-        // Validar campos obligatorios
-        if (!title || !description || !code || !price || !stock || !category || !author) {
-            return res.status(400).json({ error: 'Todos los campos obligatorios deben ser proporcionados' });
-        }
-
-        // Crear el producto
-        const newProduct = await ProductManager.addProduct({ title, description, code, price, stock, category, author, status, thumbnails });
+        const newProduct = await prodService.create(req.body);
         res.status(201).json(newProduct);
     } catch (error) {
-        console.error('Error al crear producto:', error.message);
-        res.status(500).json({ error: error.message || 'Ocurrió un error en el servidor' });
+        res.status(500).json({ error: error.message });
     }
-}
+};
 
-export const updateProduct = async (req,res) =>{
+// Controlador para actualizar un producto
+export const updateProduct = async (req, res) => {
     try {
-        const productId = req.params.pid; // ID recibido de la URL
-        const updatedFields = req.body;  // Campos a actualizar
-
-        const updatedProduct = await ProductManager.updateProduct(productId, updatedFields); // Llama al manager
-
-        res.json(updatedProduct); // Envía el producto actualizado como respuesta
+        const { pid } = req.params;
+        const updatedProduct = await prodService.update(pid, req.body);
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Producto no encontrado" });
+        }
+        res.status(200).json(updatedProduct);
     } catch (error) {
-        console.error('Error en PUT /:pid:', error.message);
-        res.status(400).json({ error: error.message }); // Devuelve el mensaje de error
+        res.status(500).json({ error: error.message });
     }
-}
+};
 
- export const deleteProduct = async (req, res) =>{
+// Controlador para eliminar un producto
+export const deleteProduct = async (req, res) => {
     try {
-        const productId = req.params.pid;
-        console.log('Solicitud recibida en DELETE /:pid con ID:', productId);
-
-        const deletedProduct = await ProductManager.deleteProduct(productId);
-        console.log('Producto eliminado:', deletedProduct);
-
-        res.json(deletedProduct);
+        const { pid } = req.params;
+        const deletedProduct = await prodService.delete(pid);
+        if (!deletedProduct) {
+            return res.status(404).json({ message: "Producto no encontrado" });
+        }
+        res.status(200).json({ message: "Producto eliminado exitosamente" });
     } catch (error) {
-        console.error('Error en DELETE /:pid:', error);
-        res.status(404).json({ error: 'Producto no encontrado' });
+        res.status(500).json({ error: error.message });
     }
- }
+};

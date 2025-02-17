@@ -1,6 +1,9 @@
 import { Router } from "express";
-import ProductModel from "../models/product.model.js";
-import CartModel from "../models/cart.model.js";
+import ProductModel from "../daos/models/product.model.js";
+import CartModel from "../daos/models/cart.model.js";
+import { UserModel } from "../daos/models/user.model.js";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 const router = Router();
 
 router.get('/products', async (req, res) => {
@@ -84,6 +87,22 @@ router.get("/carts/:cid", async (req, res) => {
     } catch (error) {
         console.error("Error al obtener el carrito:", error.message);
         res.status(500).send("Error al cargar el carrito");
+    }
+});
+
+router.get("/register", async (req, res) => {
+    try {
+        res.render("register", { title: "register" });
+    } catch (error) {
+        res.status(500).send(`<h1>Error</h1><h3>${error.message}</h3>`);
+    }
+});
+
+router.get("/login", async (req, res) => {
+    try {
+        res.render("login", { title: "inicio de sesion" });
+    } catch (error) {
+        res.status(500).send(`<h1>Error</h1><h3>${error.message}</h3>`);
     }
 });
 
