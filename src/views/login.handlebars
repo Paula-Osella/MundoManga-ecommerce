@@ -11,11 +11,12 @@
     {{#if message}}
     <p>{{message}}</p>
     {{/if}}
-    <form action="/user/login" method="POST">
-        <input type="text" name="email" placeholder="Correo electrónico" required>
-        <input type="password" name="password" placeholder="Contraseña" required>
-        <button type="submit">Iniciar sesión</button>
-    </form>
+<form action="/login" method="post">
+  <input type="text" name="email" placeholder="Correo electrónico" required>
+  <input type="password" name="password" placeholder="Contraseña" required>
+  <button type="submit">Iniciar sesión</button>
+</form>
+
 </body>
 
 </html>

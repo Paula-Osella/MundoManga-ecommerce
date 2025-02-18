@@ -1,9 +1,7 @@
 import { Router } from "express";
 import ProductModel from "../daos/models/product.model.js";
 import CartModel from "../daos/models/cart.model.js";
-import { UserModel } from "../daos/models/user.model.js";
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import {userController} from "../controllers/user.controller.js";
 const router = Router();
 
 router.get('/products', async (req, res) => {
@@ -92,19 +90,25 @@ router.get("/carts/:cid", async (req, res) => {
 
 router.get("/register", async (req, res) => {
     try {
-        res.render("register", { title: "register" });
+        res.render("register", { title: "Registro de Usuario" });
     } catch (error) {
         res.status(500).send(`<h1>Error</h1><h3>${error.message}</h3>`);
     }
 });
 
+// Aquí manejas el POST que recibe los datos del formulario de registro
+router.post("/register", userController.register);  // Esto debería apuntar al controlador de registro
+
 router.get("/login", async (req, res) => {
     try {
-        res.render("login", { title: "inicio de sesion" });
+        res.render("login", { title: "Inicio de Sesión" });
     } catch (error) {
         res.status(500).send(`<h1>Error</h1><h3>${error.message}</h3>`);
-    }
+    } 
 });
+
+// Aquí manejas el POST que recibe los datos del formulario de login
+router.post("/login", userController.login);  // Esto debería apuntar al controlador de log
 
 
 export default router;
