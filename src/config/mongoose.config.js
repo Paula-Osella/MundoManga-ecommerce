@@ -19,7 +19,7 @@ export const initMongoDB = async () => {
         console.log("Conexión a MongoDB exitosa");
     } catch (error) {
         console.error("Error de conexión a MongoDB:", error);
-        throw error; // Lanzar error para que sea manejado en otro lugar si es necesario
+        throw error; 
     }
 };
 

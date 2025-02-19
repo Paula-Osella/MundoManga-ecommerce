@@ -1,6 +1,6 @@
 import { prodService } from "../services/product.services.js";
 
-// Controlador para obtener todos los productos
+
 export const getAllProducts = async (req, res) => {
     try {
         const products = await prodService.getAll();
@@ -10,7 +10,7 @@ export const getAllProducts = async (req, res) => {
     }
 };
 
-// Controlador para obtener un producto por ID
+
 export const getProductById = async (req, res) => {
     try {
         const { pid } = req.params;
@@ -24,7 +24,7 @@ export const getProductById = async (req, res) => {
     }
 };
 
-// Controlador para crear un nuevo producto
+
 export const createProduct = async (req, res) => {
     try {
         const newProduct = await prodService.create(req.body);
@@ -34,7 +34,7 @@ export const createProduct = async (req, res) => {
     }
 };
 
-// Controlador para actualizar un producto
+
 export const updateProduct = async (req, res) => {
     try {
         const { pid } = req.params;
@@ -48,7 +48,7 @@ export const updateProduct = async (req, res) => {
     }
 };
 
-// Controlador para eliminar un producto
+
 export const deleteProduct = async (req, res) => {
     try {
         const { pid } = req.params;

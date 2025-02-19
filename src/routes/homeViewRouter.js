@@ -96,8 +96,8 @@ router.get("/register", async (req, res) => {
     }
 });
 
-// Aquí manejas el POST que recibe los datos del formulario de registro
-router.post("/register", userController.register);  // Esto debería apuntar al controlador de registro
+
+router.post("/register", userController.register);  
 
 router.get("/login", async (req, res) => {
     try {
@@ -107,8 +107,8 @@ router.get("/login", async (req, res) => {
     } 
 });
 
-// Aquí manejas el POST que recibe los datos del formulario de login
-router.post("/login", userController.login);  // Esto debería apuntar al controlador de log
+
+router.post("/login", userController.login);  
 
 
 export default router;

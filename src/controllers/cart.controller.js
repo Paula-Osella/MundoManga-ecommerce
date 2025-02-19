@@ -2,7 +2,6 @@ import { cartService } from "../services/cart.services.js";
 
 export const cartController = {
 
-    // Crear un carrito nuevo
     createCart: async (req, res) => {
         try {
             const cart = await cartService.createCart();
@@ -22,7 +21,7 @@ export const cartController = {
         }
     },
 
-    // Agregar un producto al carrito
+
     addProdToCart: async (req, res) => {
         const { cartId, prodId } = req.params;
         try {
@@ -33,7 +32,7 @@ export const cartController = {
         }
     },
 
-    // Eliminar un producto del carrito
+ 
     removeProdFromCart: async (req, res) => {
         const { cartId, prodId } = req.params;
         try {
@@ -44,7 +43,7 @@ export const cartController = {
         }
     },
 
-    // Actualizar la cantidad de un producto en el carrito
+
     updateProdQuantityToCart: async (req, res) => {
         const { cartId, prodId } = req.params;
         const { quantity } = req.body;
@@ -56,7 +55,7 @@ export const cartController = {
         }
     },
 
-    // Limpiar el carrito (eliminar todos los productos)
+
     clearCart: async (req, res) => {
         const { cartId } = req.params;
         try {

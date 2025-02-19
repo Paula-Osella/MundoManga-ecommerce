@@ -9,7 +9,7 @@ import {
 
 const router = Router();
 
-// Rutas con sus respectivos controladores
+
 router.get('/', getAllProducts);
 router.get('/:pid', getProductById);
 router.post('/', createProduct);

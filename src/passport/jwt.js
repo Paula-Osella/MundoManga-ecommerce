@@ -4,7 +4,6 @@ import "dotenv/config";
 import { userService } from "../services/user.services.js";
 
 const verifyToken = async (jwt_payload, done) => {
-  //req.user = jwt_payload
   if (!jwt_payload) return done(null, false, { messages: "Usuario inexistente" });
   return done(null, jwt_payload);
 };
