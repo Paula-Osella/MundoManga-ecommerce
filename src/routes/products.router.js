@@ -6,14 +6,17 @@ import {
     updateProduct,
     deleteProduct,
 } from "../controllers/products.controller.js";
+import { roleAuth } from "../middlewares/roleAuth.js"; // Importamos roleAuth
 
 const router = Router();
 
+router.route('/')
+.get(getAllProducts)
+.post(roleAuth('admin'), createProduct); // Solo el admin puede crear productos
 
-router.get('/', getAllProducts);
-router.get('/:pid', getProductById);
-router.post('/', createProduct);
-router.put('/:pid', updateProduct);
-router.delete('/:pid', deleteProduct);
+router.route('/:pid')
+.get(getProductById)
+.put(roleAuth('admin'), updateProduct) // Solo el admin puede actualizar productos
+.delete(roleAuth('admin'), deleteProduct); // Solo el admin puede eliminar productos
 
 export default router;

@@ -1,16 +1,14 @@
 import express from 'express';
+import router from './routes/router.js';
 import handlebars from 'express-handlebars';
 import session from 'express-session';
 import cookieParser from "cookie-parser";
-import productsRouter from './routes/products.router.js';
-import usersRouter from './routes/user.router.js'
-import cartRouter from './routes/cart.router.js';
 import { __dirname } from './utils.js';
-import homeViewRouter from './routes/homeViewRouter.js';
 import { initMongoDB } from './config/mongoose.config.js';
 import passport from 'passport';
 import MongoStore from 'connect-mongo';
 import 'dotenv/config';
+import config from './config/config.js';
 import './passport/jwt.js';
 
 const app = express();
@@ -34,6 +32,7 @@ const storeConfig = {
 
 // Middleware de configuración
 app.use(express.json());
+app.use('/', router);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
@@ -54,14 +53,7 @@ app.engine('handlebars', handlebars.engine({
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
-// Rutas
-app.get('/MundoManga', (req, res) => {
-    res.send('¿Listo para hacer compras?');
-});
-app.use('/api/products', productsRouter);
-app.use('/api/carts', cartRouter);
-app.use("/users", usersRouter);
-app.use("/", homeViewRouter);
+
 
 
 // Middleware de manejo de errores
@@ -76,7 +68,7 @@ app.use((req, res) => {
 });
 
 // Servidor
-const PORT = 8080;
+const PORT = config.port;
 const httpServer = app.listen(PORT, () => {
     console.log(`Ejecutándose en http://localhost:${PORT}`);
 });

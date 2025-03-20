@@ -1,13 +1,13 @@
 import { createHash, isValidPassword } from "../utils.js";
 import Services from "./service.manager.js";
-import { userDao } from "../daos/mongodb/user.dao.js";
+import { userRepository } from "../repository/user.repository.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { cartService } from "./cart.services.js";
 
 class UserService extends Services {
     constructor() {
-        super(userDao);
+        super(userRepository); // Usamos el UserRepository aquí
     }
 
     generateToken = (user) => {
@@ -20,7 +20,7 @@ class UserService extends Services {
 
     getUserByEmail = async (email) => {
         try {
-            return await this.dao.getByEmail(email);
+            return await this.dao.getByEmail(email); // Esta llamada ahora pasa por el repository
         } catch (error) {
             throw new Error(error);
         }
@@ -28,7 +28,7 @@ class UserService extends Services {
 
     register = async (user) => {
         try {
-            const { email, password} = user;
+            const { email, password } = user;
             const existUser = await this.getUserByEmail(email);
             if (existUser) throw new Error("User already exists");
             const cartUser = await cartService.createCart();
@@ -37,7 +37,7 @@ class UserService extends Services {
                 password: createHash(password),
                 cart: cartUser._id 
             });
-            return newUser;
+            return newUser; // Ya se retorna un DTO
         } catch (error) {
             throw error;
         }
@@ -50,7 +50,7 @@ class UserService extends Services {
             if (!userExist) throw new Error("User not found");
             const passValid = isValidPassword(password, userExist);
             if (!passValid) throw new Error("incorrect credentials");
-            return this.generateToken(userExist);
+            return this.generateToken(userExist); // Token sigue igual
         } catch (error) {
             throw error;
         }
