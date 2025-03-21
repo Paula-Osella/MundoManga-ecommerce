@@ -17,7 +17,7 @@ const ticketSchema = new mongoose.Schema({
   },
   purchaser: {
     type: String,
-    required: true,  // Aquí debes usar el email del usuario
+    required: true,  
   },
 });
 

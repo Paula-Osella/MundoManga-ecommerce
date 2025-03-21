@@ -9,7 +9,7 @@ class UserController extends Controllers {
   register = async (req, res, next) => {
     try {
       const user = await this.service.register(req.body);
-      res.json(user); // Se retorna el DTO aquí
+      res.json(user); 
     } catch (error) {
       next(error);
     }
@@ -33,7 +33,7 @@ class UserController extends Controllers {
         const user = await this.service.getById(req.user._id);
         if (!user) throw new Error("User not found");
 
-        res.json(user); // Retornamos el DTO del usuario
+        res.json(user); 
     } catch (error) {
         next(error);
     }
