@@ -1,5 +1,6 @@
 import Controllers from "./controller.manager.js";
 import { userService } from '../services/user.services.js';
+import { UserDTO } from "../dtos/userdto.js";
 
 class UserController extends Controllers {
   constructor(){
@@ -9,8 +10,9 @@ class UserController extends Controllers {
   register = async (req, res, next) => {
     try {
       const user = await this.service.register(req.body);
-      res.json(user); 
+      res.status(201).json({ status: 'success', payload: user });
     } catch (error) {
+      console.error('Error en UserController:', error);
       next(error);
     }
   };
@@ -18,9 +20,7 @@ class UserController extends Controllers {
   login = async (req, res, next) => {
     try {
       const token = await this.service.login(req.body);
-      res
-        .cookie('token', token, { httpOnly: true })
-        .json({ message: 'Login OK', token });
+      res.cookie('jwt', token, { httpOnly: true }).json({ message: 'Logged in', token });
     } catch (error) {
       next(error);
     }
@@ -28,16 +28,18 @@ class UserController extends Controllers {
   
   privateData = async (req, res, next) => {
     try {
-        if (!req.user) throw new Error("No se puede acceder a los datos del usuario");
-
-        const user = await this.service.getById(req.user._id);
-        if (!user) throw new Error("User not found");
-
-        res.json(user); 
+      if (!req.user) throw new Error("Cannot access user info");
+      console.log(req.user);
+      const user = await this.service.getById(req.user._id); // Asegúrate de pasar el _id, no todo el objeto user
+      if (!user) {
+        return res.status(404).json({ status: "Error", message: "User not validated" });
+      }
+      res.json({ user });
     } catch (error) {
-        next(error);
+      next(error);
     }
-};
+  };
+  
 }
 
 export const userController = new UserController();

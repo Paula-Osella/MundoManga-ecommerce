@@ -12,7 +12,8 @@ class UserService extends Services {
 
     generateToken = (user) => {
         const payload = {
-            _id: user._id  
+            _id: user._id ,
+            role: user.role  
         };
     
         return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "20m" });
@@ -34,7 +35,9 @@ class UserService extends Services {
             const cartUser = await cartService.createCart();
             const newUser = await this.dao.register({
                 ...user,
+                email,
                 password: createHash(password),
+                role: role ? role.toUpperCase() : "USER",
                 cart: cartUser._id 
             });
             return newUser; 
@@ -55,6 +58,13 @@ class UserService extends Services {
             throw error;
         }
     };
+    privateData= async (user)=>{
+        try {
+            return this.this.dao.getByEmail(user)
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 }
 
 export const userService = new UserService();

@@ -10,14 +10,12 @@ class UserRepository {
         return new UserDTO(createdUser);
     };
 
-    getById = async (id) => {
-        const user = await userDao.getById(id);
-        return new UserDTO(user);
-    };
-
     getByEmail = async (email) => {
-        const user = await userDao.getByEmail(email);
-        return user ? new UserDTO(user) : null;
+        return await userDao.getByEmail(email); 
+    };
+    
+    getById = async (id) => {
+        return await userDao.getById(id); 
     };
 }
 

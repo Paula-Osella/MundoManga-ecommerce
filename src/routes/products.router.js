@@ -6,17 +6,18 @@ import {
     updateProduct,
     deleteProduct,
 } from "../controllers/products.controller.js";
-import { roleAuth } from "../middlewares/roleAuth.js"; 
+import { roleAuth } from "../middlewares/roleAuth.js";
+import passport from "passport"; 
 
 const router = Router();
 
 router.route('/')
-.get(getAllProducts)
-.post(roleAuth('admin'), createProduct);
+    .get(getAllProducts)
+    .post(passport.authenticate('jwt', { session: false }), roleAuth('ADMIN'), createProduct); 
 
 router.route('/:pid')
-.get(getProductById)
-.put(roleAuth('admin'), updateProduct) 
-.delete(roleAuth('admin'), deleteProduct); 
+    .get(getProductById)
+    .put(passport.authenticate('jwt', { session: false }), roleAuth('ADMIN'), updateProduct) 
+    .delete(passport.authenticate('jwt', { session: false }), roleAuth('ADMIN'), deleteProduct); 
 
 export default router;
