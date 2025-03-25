@@ -1,20 +1,20 @@
 import { Router } from "express";
 import { cartController } from "../controllers/cart.controller.js";
-import { passportCall } from "../passport/passportCall.js"; // Importamos passportCall
+import passport from "passport";
 import { roleAuth } from "../middlewares/roleAuth.js";
 
 const router = Router();
 
-router.post("/", passportCall("current"), cartController.createCart); // ✅ Solo usuarios autenticados pueden crear un carrito
-
-router.route('/:cartId/product/:prodId')
-    .post(passportCall("current"), roleAuth("user"), cartController.addProdToCart)  // ✅ Solo usuarios pueden agregar productos
-    .delete(passportCall("current"), roleAuth("user"), cartController.removeProdFromCart)
-    .put(passportCall("current"), roleAuth("user"), cartController.updateProdQuantityToCart);
+router.route("/")
+    .post(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.createCart); //se puede
 
 router.route("/:cartId")
-    .get(passportCall("current"), cartController.getCartById) // ✅ Solo autenticados pueden ver su carrito
-    .delete(passportCall("current"), roleAuth("user"), cartController.clearCart);
+    .get(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.getCartById) //aun no
+    .delete(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.clearCart); // aun no
+
+router.route("/:cartId/products/:prodId")
+    .post(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.addProdToCart) // se puede 
+    .put(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.updateProdQuantityToCart) // si funciona, se puede actualizar un solo producto a la vez, pero se puede agregar otro en el post 
+    .delete(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.removeProdFromCart); // aun no 
 
 export default router;
-

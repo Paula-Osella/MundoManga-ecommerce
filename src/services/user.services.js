@@ -29,22 +29,25 @@ class UserService extends Services {
 
     register = async (user) => {
         try {
-            const { email, password } = user;
+            const { email, password, role } = user; // Extraer también "role"
             const existUser = await this.getUserByEmail(email);
             if (existUser) throw new Error("User already exists");
+    
             const cartUser = await cartService.createCart();
             const newUser = await this.dao.register({
                 ...user,
                 email,
                 password: createHash(password),
-                role: role ? role.toUpperCase() : "USER",
+                role: role ? role.toUpperCase() : "USER", // Si no viene, asigna "USER"
                 cart: cartUser._id 
             });
+    
             return newUser; 
         } catch (error) {
             throw error;
         }
     };
+    
 
     login = async (user) => {
         try {

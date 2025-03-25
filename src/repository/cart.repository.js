@@ -1,6 +1,8 @@
 // repositories/cart.repository.js
 import CartDaoMongoDB from "../daos/mongodb/cart.dao.js";
 import CartDTO from "../dtos/cartdto.js";
+import {ProductModel} from '../daos/models/product.model.js';
+import CartModel from "../daos/models/cart.model.js";
 
 class CartRepository {
     constructor() {
@@ -10,7 +12,7 @@ class CartRepository {
     async createCart() {
         try {
             const newCart = await this.cartDao.create();
-            return new CartDTO(newCart); // Devuelvo el DTO con los datos del carrito creado
+            return new CartDTO(newCart);  // Retorna un DTO con los datos del carrito creado
         } catch (error) {
             throw new Error("Error al crear el carrito");
         }
@@ -20,7 +22,7 @@ class CartRepository {
         try {
             const cart = await this.cartDao.getById(cartId);
             if (!cart) throw new Error("Carrito no encontrado");
-            return new CartDTO(cart); // Retorno el DTO con los datos del carrito
+            return new CartDTO(cart);  // Retorna un DTO con los datos del carrito
         } catch (error) {
             throw new Error("Error al obtener el carrito");
         }
@@ -28,8 +30,19 @@ class CartRepository {
 
     async addProductToCart(cartId, prodId) {
         try {
-            const updatedCart = await this.cartDao.addProdToCart(cartId, prodId);
-            return new CartDTO(updatedCart); // Retorno el carrito actualizado como DTO
+            // Buscar el carrito por ID
+            const cart = await CartModel.findById(cartId);  // Usar el modelo Cart para obtener el carrito
+
+            // Buscar el producto por ID
+            const product = await ProductModel.findById(prodId);  // Usar el modelo Product para obtener el producto
+
+            if (!product) throw new Error("Producto no encontrado");
+
+            // Aquí puedes manejar la lógica de agregar el producto al carrito
+            cart.products.push(product._id);  // Suponiendo que tienes un arreglo de productos en el carrito
+            await cart.save();
+
+            return new CartDTO(cart);  // Retorna el carrito actualizado como DTO
         } catch (error) {
             throw new Error("Error al agregar producto al carrito");
         }
@@ -37,8 +50,15 @@ class CartRepository {
 
     async removeProductFromCart(cartId, prodId) {
         try {
-            const updatedCart = await this.cartDao.removeProdToCart(cartId, prodId);
-            return new CartDTO(updatedCart); // Retorno el carrito actualizado como DTO
+            const cart = await CartModel.findById(cartId);  // Buscar el carrito por ID
+
+            if (!cart) throw new Error("Carrito no encontrado");
+
+            // Eliminar el producto del carrito
+            cart.products = cart.products.filter(productId => productId.toString() !== prodId);
+
+            await cart.save();
+            return new CartDTO(cart);  // Retorna el carrito actualizado como DTO
         } catch (error) {
             throw new Error("Error al remover producto del carrito");
         }
@@ -46,8 +66,13 @@ class CartRepository {
 
     async updateProductQuantity(cartId, prodId, quantity) {
         try {
-            const updatedCart = await this.cartDao.updateProdQuantityToCart(cartId, prodId, quantity);
-            return new CartDTO(updatedCart); // Retorno el carrito actualizado como DTO
+            const cart = await CartModel.findById(cartId);  // Buscar el carrito por ID
+            if (!cart) throw new Error("Carrito no encontrado");
+
+            // Aquí puedes agregar lógica para actualizar la cantidad del producto
+
+            // Retorna el carrito actualizado como DTO
+            return new CartDTO(cart); 
         } catch (error) {
             throw new Error("Error al actualizar cantidad del producto en el carrito");
         }
@@ -55,12 +80,17 @@ class CartRepository {
 
     async clearCart(cartId) {
         try {
-            const clearedCart = await this.cartDao.clearCart(cartId);
-            return new CartDTO(clearedCart); // Retorno el carrito vacío como DTO
+            const cart = await CartModel.findById(cartId);  // Buscar el carrito por ID
+            if (!cart) throw new Error("Carrito no encontrado");
+
+            cart.products = [];  // Vaciar el carrito
+            await cart.save();
+
+            return new CartDTO(cart);  // Retorna el carrito vacío como DTO
         } catch (error) {
             throw new Error("Error al vaciar el carrito");
         }
     }
 }
 
-export const cartRepository = new CartRepository();
+export default CartRepository;

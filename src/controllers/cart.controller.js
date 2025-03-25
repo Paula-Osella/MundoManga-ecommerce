@@ -14,9 +14,11 @@ export const cartController = {
     getCartById: async (req, res) => {
         try {
             const { cartId } = req.params;
+            console.log("ID del carrito recibido:", cartId);  // Verifica que recibes el ID correcto
             const cart = await cartService.getById(cartId);
             res.status(200).json(cart);
         } catch (error) {
+            console.error("Error al obtener el carrito:", error.message);  // Log para ver el error
             res.status(500).json({ message: error.message });
         }
     },

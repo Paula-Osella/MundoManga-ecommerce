@@ -1,0 +1,55 @@
+POSTMAN
+register
+{
+    "first_name": "PRUEBA",
+    "last_name": "PRUEBA",
+    "email": "PRUEBAn@example.com",
+    "password": "lucia123",
+    "role": "USER/ADMIN"
+}
+
+login: 
+{
+    "email": "BarreraNorbert@example.com",
+    "password": "lucia123"
+}
+
+POST PRODUCTS NUEVO:
+{
+    "name": "PRUEBA",
+    "description": "El primer volumen del manga Naruto de Masashi Kishimoto narra la historia de un niño llamado Naruto Uzumaki que lucha por graduarse de la Academia Ninja y convertirse en Hokage, el líder de su aldea",
+    "code": "ABC123",
+    "price": 150,
+    "stock": 50,
+    "category": "Shonen",
+    "author": "Masashi Kishimoto",
+    "status": true,
+    "thumbnails": ["https://example.com/image.jpg"]
+}
+
+PUT PRODUCT:
+{
+    "name": "PRUEBA MODIFICADA",
+    "description": "Este es un nuevo texto de prueba",
+    "price": 200,
+    "stock": 40,
+    "code": "XYZ789",
+    "category": "Seinen",
+    "author": "Otro Autor",
+    "status": false,
+    "thumbnails": ["https://example.com/new-image.jpg"]
+}
+
+PUT CART:
+{
+  "products": [
+    { "product": "67646afe0f3856a3d09b7096", "quantity": 8 },
+    { "product": "67646cc50f3856a3d09b709c", "quantity": 10 }
+  ]
+}
+
+POST/PUT ADD PRODUCT CART:
+{
+    "quantity": 1
+}
+
