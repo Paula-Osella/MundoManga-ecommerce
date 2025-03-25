@@ -1,4 +1,6 @@
 import { cartService } from "../services/cart.services.js";
+import CartOutputDTO from "../dtos/cart.output.dto.js";
+
 
 export const cartController = {
 
@@ -14,15 +16,23 @@ export const cartController = {
     getCartById: async (req, res) => {
         try {
             const { cartId } = req.params;
-            console.log("ID del carrito recibido:", cartId);  // Verifica que recibes el ID correcto
+            console.log("ID del carrito recibido:", cartId);  
             const cart = await cartService.getById(cartId);
             res.status(200).json(cart);
         } catch (error) {
-            console.error("Error al obtener el carrito:", error.message);  // Log para ver el error
+            console.error("Error al obtener el carrito:", error.message);  
             res.status(500).json({ message: error.message });
         }
     },
 
+    getAllCarts: async (req, res) => {
+        try {
+            const carts = await cartService.getAllCarts();
+            res.status(200).json(carts);
+        } catch (error) {
+            res.status(500).json({ message: "Error al obtener los carritos", error: error.message });
+        }
+    },
 
     addProdToCart: async (req, res) => {
         const { cartId, prodId } = req.params;
@@ -38,7 +48,8 @@ export const cartController = {
     removeProdFromCart: async (req, res) => {
         const { cartId, prodId } = req.params;
         try {
-            const updatedCart = await cartService.removeProdToCart(cartId, prodId);
+            const updatedCart = await cartService.removeProdFromCart(cartId, prodId);
+
             res.status(200).json({ message: "Producto eliminado del carrito", updatedCart });
         } catch (error) {
             res.status(500).json({ message: "Error al eliminar el producto del carrito", error: error.message });
@@ -67,4 +78,15 @@ export const cartController = {
             res.status(500).json({ message: "Error al limpiar el carrito", error: error.message });
         }
     },
+    async completePurchase(req, res, next) {
+        try {
+            const { cartId } = req.params;
+            const result = await cartService.completePurchase(cartId);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    }
+    
 };

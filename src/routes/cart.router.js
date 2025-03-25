@@ -3,18 +3,23 @@ import { cartController } from "../controllers/cart.controller.js";
 import passport from "passport";
 import { roleAuth } from "../middlewares/roleAuth.js";
 
+
 const router = Router();
 
 router.route("/")
-    .post(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.createCart); //se puede
+.get(passport.authenticate("jwt", { session: false }), roleAuth("ADMIN"), cartController.getAllCarts) 
+    .post(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.createCart); 
 
 router.route("/:cartId")
-    .get(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.getCartById) //aun no
-    .delete(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.clearCart); // aun no
+    .get(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.getCartById) 
+    .delete(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.clearCart); 
 
 router.route("/:cartId/products/:prodId")
-    .post(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.addProdToCart) // se puede 
-    .put(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.updateProdQuantityToCart) // si funciona, se puede actualizar un solo producto a la vez, pero se puede agregar otro en el post 
-    .delete(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.removeProdFromCart); // aun no 
+    .post(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.addProdToCart) 
+    .put(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.updateProdQuantityToCart) 
+    .delete(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.removeProdFromCart); 
 
+    router.route("/:cartId/purchase")
+    .post(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.completePurchase);
+    
 export default router;

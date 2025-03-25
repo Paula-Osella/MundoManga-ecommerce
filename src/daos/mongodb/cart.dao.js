@@ -15,6 +15,14 @@ export default class CartDaoMongoDB extends MongoDao {
         }
     }
 
+async getAll() {
+    try {
+        return await this.model.find().populate("products.product");
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
     async getById(id) {
         try {
             const cart = await this.model.findById(id).populate("products.product");
@@ -99,6 +107,36 @@ export default class CartDaoMongoDB extends MongoDao {
                 { $set: { products: [] } },
                 { new: true }
             );
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+    async processPurchase(cartId) {
+        try {
+            // Obtener el carrito
+            const cart = await this.model.findById(cartId).populate("products.product");
+            
+            // Verificar stock para cada producto
+            const unavailableProducts = [];
+            for (let item of cart.products) {
+                const product = await ProductModel.findById(item.product._id);
+                if (product.stock < item.quantity) {
+                    unavailableProducts.push(item.product._id);  
+                } else {
+                   
+                    product.stock -= item.quantity;
+                    await product.save();
+                }
+            }
+    
+            
+            const updatedCart = await this.model.findByIdAndUpdate(
+                cartId,
+                { $pull: { products: { product: { $in: unavailableProducts } } } },
+                { new: true }
+            );
+            
+            return { updatedCart, unavailableProducts };  
         } catch (error) {
             throw new Error(error);
         }

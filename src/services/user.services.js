@@ -38,7 +38,7 @@ class UserService extends Services {
                 ...user,
                 email,
                 password: createHash(password),
-                role: role ? role.toUpperCase() : "USER", // Si no viene, asigna "USER"
+                role: role ? role.toUpperCase() : "USER", 
                 cart: cartUser._id 
             });
     

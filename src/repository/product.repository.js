@@ -2,7 +2,7 @@
 import { ProductModel } from "../daos/models/product.model.js";
 
 export class ProductRepository {
-    // Obtener todos los productos
+
     async getAll() {
         try {
             return await ProductModel.find({});
@@ -11,7 +11,7 @@ export class ProductRepository {
         }
     }
 
-    // Crear un producto
+
     async create(productData) {
         try {
             const newProduct = new ProductModel(productData);
@@ -21,7 +21,7 @@ export class ProductRepository {
         }
     }
 
-    // Obtener un producto por ID
+
     async getById(productId) {
         try {
             return await ProductModel.findById(productId);
@@ -30,7 +30,7 @@ export class ProductRepository {
         }
     }
 
-    // Actualizar un producto
+
     async update(productId, productData) {
         try {
             return await ProductModel.findByIdAndUpdate(productId, productData, { new: true });
@@ -39,7 +39,7 @@ export class ProductRepository {
         }
     }
 
-    // Eliminar un producto
+
     async delete(productId) {
         try {
             return await ProductModel.findByIdAndDelete(productId);

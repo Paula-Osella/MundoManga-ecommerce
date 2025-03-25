@@ -30,7 +30,7 @@ class UserController extends Controllers {
     try {
       if (!req.user) throw new Error("Cannot access user info");
       console.log(req.user);
-      const user = await this.service.getById(req.user._id); // Asegúrate de pasar el _id, no todo el objeto user
+      const user = await this.service.getById(req.user._id); 
       if (!user) {
         return res.status(404).json({ status: "Error", message: "User not validated" });
       }

@@ -7,18 +7,18 @@ import { userService } from "../services/user.services.js";
 const LocalStrategy = local.Strategy;
 //Strategy para Headers + JWT
 const strategyJWT = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Extraer el JWT del encabezado como Bearer
-  secretOrKey: process.env.SECRET_KEY,  // Usa el valor de SECRET_KEY de tu archivo .env
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), 
+  secretOrKey: process.env.SECRET_KEY,  
 };
 
 const verifyToken = async (jwt_payload, done) => {
-  console.log("Token decodificado:", jwt_payload); // 🔍 Verifica que tenga un campo 'role'
+  console.log("Token decodificado:", jwt_payload); 
   
   if (!jwt_payload) return done(null, false, { message: "Usuario inexistente" });
   return done(null, jwt_payload);
 };
 
-passport.use('jwt', new JwtStrategy(strategyJWT, verifyToken)); // Usa la estrategia JWT con la clave secreta
+passport.use('jwt', new JwtStrategy(strategyJWT, verifyToken)); 
 
 const cookieExtractor = (req) => {
   return req.cookies.jwt;
@@ -44,7 +44,7 @@ const initializePassport = () => {
           if (!first_name || !last_name || !age || !email || !password) {
               return done(null, false, { message: "All fields are required" });
           }
-          //Null pq no hay error tecnico del servidor, false pq no se registro el usuario, mensaje...
+         
 
           let userExists = await userService.getByEmail(email);
 
@@ -68,13 +68,13 @@ const initializePassport = () => {
   }));
 
   passport.serializeUser((user, done) => {
-      done(null, user._id); // Guarda solo el ID del usuario
+      done(null, user._id); 
   });
 
-  // Deserializar usuario (recuperar el usuario de la base de datos por ID)
+ 
   passport.deserializeUser(async (id, done) => {
-      let user = await userService.getById(id); // Busca el usuario por su ID
-      done(null, user); // Devuelve el usuario completo a req.user
+      let user = await userService.getById(id); 
+      done(null, user); 
   });
 
 

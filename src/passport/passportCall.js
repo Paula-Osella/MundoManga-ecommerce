@@ -7,8 +7,8 @@ export const passportCall = (strategy) => {
       if (!user) {
         return res.status(401).json({ message: "Unauthorized" });
       }
-      req.user = user; // Asigna el usuario al request
-      next(); // Pasa al siguiente middleware
+      req.user = user; 
+      next(); 
     })(req, res, next);
   };
 };
