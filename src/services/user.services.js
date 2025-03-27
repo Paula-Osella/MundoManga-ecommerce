@@ -13,7 +13,7 @@ class UserService extends Services {
     generateToken = (user) => {
         const payload = {
             _id: user._id,
-            email: user.email,  // Agrega el correo al payload
+            email: user.email, 
             role: user.role  
         };
     
@@ -30,7 +30,7 @@ class UserService extends Services {
 
     register = async (user) => {
         try {
-            const { email, password, role } = user; // Extraer también "role"
+            const { email, password, role } = user; 
             const existUser = await this.getUserByEmail(email);
             if (existUser) throw new Error("User already exists");
     

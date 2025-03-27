@@ -43,10 +43,9 @@ class CartServices {
 
     async completePurchase(cartId, userEmail) {
         try {
-            // Recupera el carrito por su ID
+
             const cart = await cartRepository.getById(cartId);
-            
-            // Si el carrito no tiene un correo, usa el correo pasado al método
+
             const purchaser = userEmail || cart.userEmail;
     
             if (!purchaser) {
@@ -55,46 +54,49 @@ class CartServices {
     
             let totalAmount = 0;
             const productsOutOfStock = [];
+            const updatedProducts = []; 
     
-            // Recorremos los productos en el carrito
+
             for (let item of cart.products) {
                 const product = await ProductModel.findById(item.product._id);
     
-                // Verificamos si el producto tiene suficiente stock
+
                 if (product.stock >= item.quantity) {
-                    // Descontamos el stock
+
                     product.stock -= item.quantity;
     
-                    // Guardamos los cambios en el producto
+
                     await product.save();
     
-                    // Calculamos el total de la compra
+
                     totalAmount += product.price * item.quantity;
+    
+                    updatedProducts.push(item);  
                 } else {
-                    // Si no hay suficiente stock, lo agregamos a la lista de productos sin stock
+                   
                     productsOutOfStock.push(product.title);
                 }
             }
     
-            // Si todos los productos tienen stock suficiente, creamos el ticket
-            if (productsOutOfStock.length === 0) {
-                const ticket = await ticketService.createTicketFromCart(totalAmount, purchaser);
+
+            cart.products = updatedProducts;
+            await cart.save(); 
     
-                // Limpiar el carrito después de la compra
-                await cartRepository.clearCart(cartId);
+            const ticket = await ticketService.createTicketFromCart(totalAmount, purchaser);
+
+            await cartRepository.clearCart(cartId);
     
-                return ticket;
-            } else {
-                // Si hay productos sin stock, devolvemos el mensaje y los productos no comprados
-                return { 
-                    message: "No se pudo completar la compra, los siguientes productos no tienen suficiente stock", 
-                    productsOutOfStock 
-                };
-            }
+            return {
+                ticket,
+                message: "Compra realizada con éxito.",
+                productsOutOfStock
+            };
+    
         } catch (error) {
             throw new Error("Error completing purchase: " + error.message);
         }
     }
+    
     
 }
 

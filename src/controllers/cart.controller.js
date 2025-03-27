@@ -16,11 +16,11 @@ export const cartController = {
     getCartById: async (req, res) => {
         try {
             const { cartId } = req.params;
-            console.log("ID del carrito recibido:", cartId);  
+            console.log("ID del carrito recibido:", cartId);
             const cart = await cartService.getById(cartId);
             res.status(200).json(cart);
         } catch (error) {
-            console.error("Error al obtener el carrito:", error.message);  
+            console.error("Error al obtener el carrito:", error.message);
             res.status(500).json({ message: error.message });
         }
     },
@@ -44,7 +44,7 @@ export const cartController = {
         }
     },
 
- 
+
     removeProdFromCart: async (req, res) => {
         const { cartId, prodId } = req.params;
         try {
@@ -81,16 +81,16 @@ export const cartController = {
     async completePurchase(req, res, next) {
         try {
             const { cartId } = req.params;
-            const user = req.user;  // Obtén el usuario desde req.user
-            const userEmail = user.email;  // Extrae el correo del usuario
-            
-            // Llama al servicio y pasa el correo al método de completar compra
+            const user = req.user;
+            const userEmail = user.email;
+
+
             const result = await cartService.completePurchase(cartId, userEmail);
-    
-            res.status(200).json(result);  // Devuelve el resultado de la compra
+
+            res.status(200).json(result);
         } catch (error) {
-            next(error);  // Manejo de errores
+            next(error);
         }
     }
-    
+
 };

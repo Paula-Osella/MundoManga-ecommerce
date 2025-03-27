@@ -2,7 +2,7 @@ import ProductModel from "../daos/models/product.model.js";
 import CartModel from "../daos/models/cart.model.js";
 import { userController } from "../controllers/user.controller.js";
 
-// Controlador para obtener productos
+
 export const getAllProducts = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 10;
@@ -55,7 +55,7 @@ export const getAllProducts = async (req, res) => {
     }
 };
 
-// Controlador para obtener carrito por ID
+
 export const getCartById = async (req, res) => {
     const { cid } = req.params;
 
@@ -79,7 +79,7 @@ export const getCartById = async (req, res) => {
     }
 };
 
-// Controlador para mostrar el registro de usuario
+
 export const showRegister = async (req, res) => {
     try {
         res.render("register", { title: "Registro de Usuario" });
@@ -88,10 +88,10 @@ export const showRegister = async (req, res) => {
     }
 };
 
-// Controlador para registrar usuario
+
 export const registerUser = userController.register;
 
-// Controlador para mostrar el login de usuario
+
 export const showLogin = async (req, res) => {
     try {
         res.render("login", { title: "Inicio de Sesión" });
@@ -100,5 +100,4 @@ export const showLogin = async (req, res) => {
     }
 };
 
-// Controlador para login de usuario
 export const loginUser = userController.login;

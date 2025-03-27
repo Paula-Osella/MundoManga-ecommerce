@@ -27,8 +27,8 @@ class TicketRepository {
     async createTicketFromCart(amount, purchaser) {
         try {
             const ticket = { amount, purchaser };
-            console.log("Ticket data being created:", ticket); // Log para verificar los datos del ticket
-            if (!purchaser) throw new Error("Purchaser (email) is required");  // Verificar que el correo esté presente
+            console.log("Ticket data being created:", ticket); 
+            if (!purchaser) throw new Error("Purchaser (email) is required");  
             const createdTicket = await this.dao.createTicket(ticket);
             return new TicketOutputDTO(createdTicket);
         } catch (e) {
