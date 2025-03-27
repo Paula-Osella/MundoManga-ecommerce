@@ -56,25 +56,36 @@ class CartServices {
             let totalAmount = 0;
             const productsOutOfStock = [];
     
-            // Procesa los productos del carrito
+            // Recorremos los productos en el carrito
             for (let item of cart.products) {
-                const product = item.product;
+                const product = await ProductModel.findById(item.product._id);
+    
+                // Verificamos si el producto tiene suficiente stock
                 if (product.stock >= item.quantity) {
+                    // Descontamos el stock
+                    product.stock -= item.quantity;
+    
+                    // Guardamos los cambios en el producto
+                    await product.save();
+    
+                    // Calculamos el total de la compra
                     totalAmount += product.price * item.quantity;
                 } else {
-                    productsOutOfStock.push(item.product.title);
+                    // Si no hay suficiente stock, lo agregamos a la lista de productos sin stock
+                    productsOutOfStock.push(product.title);
                 }
             }
     
-            // Si todos los productos tienen stock suficiente, crea el ticket
+            // Si todos los productos tienen stock suficiente, creamos el ticket
             if (productsOutOfStock.length === 0) {
                 const ticket = await ticketService.createTicketFromCart(totalAmount, purchaser);
     
-                // Limpia el carrito una vez realizada la compra
+                // Limpiar el carrito después de la compra
                 await cartRepository.clearCart(cartId);
     
                 return ticket;
             } else {
+                // Si hay productos sin stock, devolvemos el mensaje y los productos no comprados
                 return { 
                     message: "No se pudo completar la compra, los siguientes productos no tienen suficiente stock", 
                     productsOutOfStock 
