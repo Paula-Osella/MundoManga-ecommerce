@@ -81,11 +81,15 @@ export const cartController = {
     async completePurchase(req, res, next) {
         try {
             const { cartId } = req.params;
-            const result = await cartService.completePurchase(cartId);
-            res.status(200).json(result);
+            const user = req.user;  // Obtén el usuario desde req.user
+            const userEmail = user.email;  // Extrae el correo del usuario
+            
+            // Llama al servicio y pasa el correo al método de completar compra
+            const result = await cartService.completePurchase(cartId, userEmail);
+    
+            res.status(200).json(result);  // Devuelve el resultado de la compra
         } catch (error) {
-            console.log(error);
-            next(error);
+            next(error);  // Manejo de errores
         }
     }
     

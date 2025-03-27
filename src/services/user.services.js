@@ -12,7 +12,8 @@ class UserService extends Services {
 
     generateToken = (user) => {
         const payload = {
-            _id: user._id ,
+            _id: user._id,
+            email: user.email,  // Agrega el correo al payload
             role: user.role  
         };
     

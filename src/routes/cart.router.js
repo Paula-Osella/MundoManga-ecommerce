@@ -2,6 +2,8 @@ import { Router } from "express";
 import { cartController } from "../controllers/cart.controller.js";
 import passport from "passport";
 import { roleAuth } from "../middlewares/roleAuth.js";
+import { passportCall } from "../passport/passportCall.js";
+
 
 
 const router = Router();
@@ -20,6 +22,6 @@ router.route("/:cartId/products/:prodId")
     .delete(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.removeProdFromCart); 
 
     router.route("/:cartId/purchase")
-    .post(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.completePurchase);
+    .post(passportCall("jwt"), roleAuth("USER"), cartController.completePurchase);
     
 export default router;

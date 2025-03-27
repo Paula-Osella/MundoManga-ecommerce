@@ -1,9 +1,9 @@
-// dtos/ticket.input.dto.js
-class TicketInputDTO {
-    constructor(amount, purchaser) {
-        this.amount = amount;
-        this.purchaser = purchaser;
+export default class TicketOutputDTO {
+    constructor(ticket) {
+        this.id = ticket._id;
+        this.code = ticket.code;
+        this.purchase_datetime = ticket.purchase_datetime;
+        this.amount = ticket.amount;
+        this.purchaser = ticket.purchaser;
     }
 }
-
-module.exports = TicketInputDTO;

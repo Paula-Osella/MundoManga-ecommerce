@@ -24,6 +24,7 @@ class TicketController {
 
     async createTicketFromCart(req, res, next) {
         const { amount, purchaser } = req.body;  
+        console.log("Purchaser:", purchaser);  // Verifica el valor del correo
         try {
             const ticket = await ticketService.createTicketFromCart(amount, purchaser);
             res.status(201).send({ message: "Compra completada con éxito", ticket });
@@ -32,6 +33,7 @@ class TicketController {
             next(error);
         }
     }
+    
 }
 
 module.exports = new TicketController();
