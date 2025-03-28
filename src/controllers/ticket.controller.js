@@ -1,5 +1,5 @@
-import { ticketService } from '../services/ticket.service';
-import TicketOutputDTO from '../dtos/ticket.output.dto';  // DTO de salida
+import { ticketService } from '../services/ticket.service.js';
+import TicketOutputDTO from '../dtos/ticket.output.dto.js';
 
 class TicketController {
     async getAllTickets(req, res, next) {
@@ -24,7 +24,7 @@ class TicketController {
 
     async createTicketFromCart(req, res, next) {
         const { amount, purchaser } = req.body;  
-        console.log("Purchaser:", purchaser);  // Verifica el valor del correo
+        console.log("Purchaser:", purchaser); 
         try {
             const ticket = await ticketService.createTicketFromCart(amount, purchaser);
             res.status(201).send({ message: "Compra completada con éxito", ticket });
@@ -36,4 +36,6 @@ class TicketController {
     
 }
 
-module.exports = new TicketController();
+export default new TicketController();
+
+

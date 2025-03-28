@@ -17,6 +17,15 @@ class UserRepository {
     getById = async (id) => {
         return await userDao.getById(id); 
     };
+    async changeUserPassword (user){
+        try {
+            let response = await this.dao.saveUser(user)
+            return new UserOutputDTO(response)
+        } catch (error) {
+            throw new Error(e)
+        }
+    }
+
 }
 
 
