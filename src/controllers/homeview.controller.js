@@ -100,4 +100,15 @@ export const showLogin = async (req, res) => {
     }
 };
 
+export const changePasswordPage = (req, res) => {
+    const { token } = req.query;
+    if (token) {
+        // Aquí puedes verificar el token si es necesario
+        res.render('change-password', { token });
+    } else {
+        res.status(400).send('Token inválido');
+    }
+};
+
+
 export const loginUser = userController.login;

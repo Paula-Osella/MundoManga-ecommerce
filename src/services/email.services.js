@@ -1,27 +1,30 @@
 import { createTransport } from "nodemailer";
 import { purchaseTicketTemplate } from '../views/templates/purchaseTicketTemplate.js';
-import config from "../config/config.js"; 
+import { changePasswordTemplate } from '../views/templates/changePasswordTemplate.js';
+import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken'; 
+import config from "../config/config.js";
 
-// Se crea el objeto de transporte con las credenciales de Gmail
+
 export const transporter = createTransport({
     service: 'gmail',
     secure: true,
-    port: 587, 
+    port: 587,
     auth: {
-        user: config.mailUser, 
-        pass: config.mailPass 
+        user: config.mailUser,
+        pass: config.mailPass
     }
 });
 
-// Configuración del email
+
 export const gmailConfig = (ticket, email) => ({
-    from: config.mailUser, 
-    to: email,   
+    from: config.mailUser,
+    to: email,
     subject: 'Purchase Ticket',
     html: purchaseTicketTemplate(ticket, email),
 });
 
-// Función para enviar el correo
+
 export const sendMailGmail = async (ticket, email) => {
     try {
         const mailOptions = gmailConfig(ticket, email);
@@ -37,3 +40,13 @@ export const sendMailGmail = async (ticket, email) => {
         throw error;
     }
 };
+
+export const gmailChangePasswordConfig = (resetLink, email) => {
+    return ({
+        from: process.env.EMAIL_USER,  
+        to: email,   
+        subject: 'Change Password',  
+        html: changePasswordTemplate(resetLink),  
+    });
+};
+

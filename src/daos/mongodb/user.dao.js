@@ -29,6 +29,26 @@ class UserDaoMongo extends MongoDao {
             throw new Error(error);
         }
     }
+    async saveUser(user){
+        try {
+            return await user.save()
+        } catch (error) {
+            throw new Error("Error while saving the user")
+        }
+    }
+    async changeUserPassword(user) {
+        try {
+            
+            const updatedUser = await this.model.findByIdAndUpdate(
+                user._id,
+                { password: user.password },
+                { new: true } 
+            );
+            return updatedUser;
+        } catch (error) {
+            throw new Error("Error updating password: " + error.message);
+        }
+    }
 }
 
 export const userDao = new UserDaoMongo();

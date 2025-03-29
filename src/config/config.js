@@ -7,6 +7,7 @@ const config = {
     secretKey: process.env.SECRET_KEY,
     mailUser: process.env.GMAIL,  // Se toma el correo de .env
     mailPass: process.env.PASS_GOOGLE, // Se toma la clave de .env
+    baseUrl: process.env.BASE_URL
 };
 
 export default config;

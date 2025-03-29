@@ -1,5 +1,7 @@
 import Controllers from "./controller.manager.js";
 import { userService } from '../services/user.services.js';
+
+
 import { UserDTO } from "../dtos/userdto.js";
 
 class UserController extends Controllers {
@@ -39,7 +41,40 @@ class UserController extends Controllers {
       next(error);
     }
   };
+
   
+
+  changePassword = async(req, res, next) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const token = req.headers.authorization?.split(' ')[1]; 
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ status: "error", message: "Both current and new passwords are required" });
+      }
+
+      if (!token) {
+        return res.status(401).json({ status: "error", message: "Token is required" });
+      }
+
+      console.log("Token recibido:", token); 
+
+      
+      const decoded = await userService.verifyTokenPassword(token);  
+
+      if (!decoded) {
+        return res.status(401).json({ status: "error", message: "Invalid or expired token" });
+      }
+
+      
+      const result = await userService.changePassword(decoded.email, currentPassword, newPassword);
+
+      res.status(200).json({ message: result.message });
+
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const userController = new UserController();

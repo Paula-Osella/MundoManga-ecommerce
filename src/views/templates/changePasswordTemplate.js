@@ -1,4 +1,4 @@
-export const passwordResetEmailTemplate = (token) => {
+export const changePasswordTemplate  = (resetLink) => {
     return `
     <!DOCTYPE html>
     <html lang="es">
@@ -83,7 +83,8 @@ export const passwordResetEmailTemplate = (token) => {
             <div class="container">
                 <h2>Recuperación de Contraseña</h2>
                 <p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente botón para continuar con el proceso:</p>
-                <a href="http://localhost:8000/api/views/change-password?token=${token}" class="button">Restablecer Contraseña</a>
+                
+                 <a href="${resetLink}" style="padding: 10px 15px; background-color:rgb(57, 38, 103); color: white; text-decoration: none;">Restablecer Contraseña</a>
                 <p>Este enlace expirará en 1 hora por motivos de seguridad.</p>
                 <p>Si no solicitaste este cambio, por favor ignora este mensaje.</p>
                 <div class="footer">

@@ -5,7 +5,8 @@ import {
     showRegister,
     registerUser,
     showLogin,
-    loginUser
+    loginUser,
+    changePasswordPage
 } from "../controllers/homeview.controller.js";
 
 const router = Router();
@@ -23,5 +24,6 @@ router.post("/register", registerUser);
 // Rutas para el inicio de sesión de usuario
 router.get("/login", showLogin);
 router.post("/login", loginUser);
+router.get('/change-password', changePasswordPage);
 
 export default router;

@@ -1,6 +1,6 @@
 import { userDao } from "../daos/mongodb/user.dao.js";
 import { UserDTO } from "../dtos/userdto.js";
-
+import { UserModel } from "../daos/models/user.model.js";
 class UserRepository {
     constructor() {
         this.dao = userDao;
@@ -15,17 +15,22 @@ class UserRepository {
     };
     
     getById = async (id) => {
-        return await userDao.getById(id); 
+        return await userDao.getByEmail(id); 
     };
-    async changeUserPassword (user){
+    async changeUserPassword(user) {
         try {
-            let response = await this.dao.saveUser(user)
-            return new UserOutputDTO(response)
+            
+            const updatedUser = await UserModel.findByIdAndUpdate(
+                user._id,
+                { password: user.password },
+                { new: true } 
+            );
+            return updatedUser;
         } catch (error) {
-            throw new Error(e)
+            throw new Error("Error updating password: " + error.message);
         }
     }
-
+    
 }
 
 
