@@ -1,0 +1,48 @@
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:12:18"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:12:19"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:19:22"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:19:24"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:22:03"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:22:04"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:32:16"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:32:17"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:35:20"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:35:21"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:36:45"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:36:46"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:38:15"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:38:16"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:39:38"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:39:39"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:40:20"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:40:21"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:43:31"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:43:33"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:43:47"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:43:47"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:44:00"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:44:01"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-07-23 20:49:13"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:49:14"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:49:15"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-07-23 20:49:33"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:49:34"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:49:34"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-07-23 20:51:17"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:51:18"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:51:19"}
+{"level":"info","message":"Instancia de ProductRepository creada.","timestamp":"2025-07-23 20:53:36"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-07-23 20:53:37"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:53:37"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:53:38"}
+{"level":"info","message":"Instancia de ProductRepository creada.","timestamp":"2025-07-23 20:57:39"}
+{"level":"info","message":"Instancia de TicketRepository creada.","timestamp":"2025-07-23 20:57:39"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-07-23 20:57:39"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 20:57:39"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 20:57:41"}
+{"level":"info","message":"Instancia de ProductRepository creada.","timestamp":"2025-07-23 21:00:47"}
+{"level":"info","message":"Instancia de UserRepository creada.","timestamp":"2025-07-23 21:00:48"}
+{"level":"info","message":"Instancia de TicketRepository creada.","timestamp":"2025-07-23 21:00:48"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-07-23 21:00:48"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-07-23 21:00:48"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-07-23 21:00:49"}
