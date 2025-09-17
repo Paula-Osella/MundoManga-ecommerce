@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Registro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-  <h1>Registro</h1>
-  {{#if message}}
-    <p>{{message}}</p>
-  {{/if}}
-<form action="/register" method="post">
-  <input type="text" name="first_name" placeholder="Nombre" required>
-  <input type="text" name="last_name" placeholder="Apellido" required>
-  <input type="email" name="email" placeholder="Correo electrónico" required>
-  <input type="password" name="password" placeholder="Contraseña" required>
-  <button type="submit">Registrar</button>
-</form>
-
+    <main class="auth-page-main">
+        <div class="auth-container">
+            <h1>Registro</h1>
+            {{#if message}}
+                <p class="auth-message-error">{{message}}</p>
+            {{/if}}
+            <form action="/register" method="post" class="auth-form">
+                <input type="text" name="first_name" placeholder="Nombre" required class="auth-input">
+                <input type="text" name="last_name" placeholder="Apellido" required class="auth-input">
+                <input type="email" name="email" placeholder="Correo electrónico" required class="auth-input">
+                <input type="password" name="password" placeholder="Contraseña" required class="auth-input">
+                <button type="submit" class="auth-button">Registrar</button>
+            </form>
+            <div class="auth-links">
+                <p>¿Ya tienes cuenta? <a href="/login" class="auth-link">Inicia sesión aquí</a></p>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
-
-

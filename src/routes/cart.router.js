@@ -2,26 +2,33 @@ import { Router } from "express";
 import { cartController } from "../controllers/cart.controller.js";
 import passport from "passport";
 import { roleAuth } from "../middlewares/roleAuth.js";
-import { passportCall } from "../passport/passportCall.js";
-
-
 
 const router = Router();
 
+// Estrategia que lee el JWT desde la cookie `jwt`
+const cookieAuth = passport.authenticate("current", { session: false });
+
 router.route("/")
-.get(passport.authenticate("jwt", { session: false }), roleAuth("ADMIN"), cartController.getAllCarts) 
-    .post(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.createCart); 
+  // Listar todos los carritos: solo ADMIN
+  .get(cookieAuth, roleAuth("ADMIN"), cartController.getAllCarts)
+  // Crear carrito: USER o ADMIN
+  .post(cookieAuth, roleAuth("USER", "ADMIN"), cartController.createCart);
 
 router.route("/:cartId")
-    .get(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.getCartById) 
-    .delete(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.clearCart); 
+  // Ver carrito propio: USER o ADMIN
+  .get(cookieAuth, roleAuth("USER", "ADMIN"), cartController.getCartById)
+  // Vaciar carrito: USER o ADMIN
+  .delete(cookieAuth, roleAuth("USER", "ADMIN"), cartController.clearCart);
 
 router.route("/:cartId/products/:prodId")
-    .post(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.addProdToCart) 
-    .put(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.updateProdQuantityToCart) 
-    .delete(passport.authenticate("jwt", { session: false }), roleAuth("USER"), cartController.removeProdFromCart); 
+  // Operaciones de items en carrito: USER o ADMIN
+  .post(cookieAuth, roleAuth("USER", "ADMIN"), cartController.addProdToCart)
+  .put(cookieAuth, roleAuth("USER", "ADMIN"), cartController.updateProdQuantityToCart)
+  .delete(cookieAuth, roleAuth("USER", "ADMIN"), cartController.removeProdFromCart);
 
-    router.route("/:cartId/purchase")
-    .post(passportCall("jwt"), roleAuth("USER"), cartController.completePurchase);
-    
+router.route("/:cartId/purchase")
+  // Comprar: USER o ADMIN
+  .post(cookieAuth, roleAuth("USER", "ADMIN"), cartController.completePurchase);
+
 export default router;
+

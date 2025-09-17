@@ -1,59 +1,199 @@
-
 <form method="get" action="/products">
-    <input type="text" name="search" placeholder="Buscar por nombre" value="{{search}}" />
-<select name="category">
-        <option value="">Filtrar por categoría</option>
-        <option value="Shonen" {{#if (eq category "Shonen")}}selected{{/if}}>Shonen</option>
-        <option value="Seinen" {{#if (eq category "Seinen")}}selected{{/if}}>Seinen</option>
-        <option value="Drama" {{#if (eq category "Drama")}}selected{{/if}}>Drama</option>
-    </select>
+  <input type="text" name="search" placeholder="Buscar por nombre" value="{{search}}" />
+  <select name="category">
+    <option value="">Filtrar por categoría</option>
+    <option value="Shonen" {{#if (eq category "Shonen")}}selected{{/if}}>Shonen</option>
+    <option value="Seinen" {{#if (eq category "Seinen")}}selected{{/if}}>Seinen</option>
+    <option value="Drama"  {{#if (eq category "Drama")}}selected{{/if}}>Drama</option>
+  </select>
 
+  <select name="sort">
+    <option value="">Ordenar por precio</option>
+    <option value="asc"  {{#if (eq sort "asc")}}selected{{/if}}>Precio Menor</option>
+    <option value="desc" {{#if (eq sort "desc")}}selected{{/if}}>Precio Mayor</option>
+  </select>
 
-    <select name="sort">
-        <option value="">Ordenar por precio</option>
-        <option value="asc" {{#if (eq sort "asc")}}selected{{/if}}>Precio Menor</option>
-        <option value="desc" {{#if (eq sort "desc")}}selected{{/if}}>Precio Mayor</option>
-    </select>
-
-    <button type="submit">Buscar</button>
+  <button type="submit">Buscar</button>
 </form>
 
-{{#if message}}
-    <div class="alert alert-warning">
-        {{message}}
-    </div>
-{{/if}}
-
+<p id="successMessage" class="auth-message"></p>
+<p id="errorMessage" class="auth-message-error"></p>
 
 {{#if isValid}}
-<div>
+  <div class="products-grid-container">
     {{#each docs}}
-    <div class="product-card">
-        <h3>{{this.title}}</h3>
-        <p>Descripción: {{this.description}}</p>
-        <p>Precio: ${{this.price}}</p>
-        <p>Stock: {{this.stock}}</p>
-        <button class="add-to-cart" data-id="{{this._id}}">Agregar al carrito</button>
-    </div>
-    <br />
+      <div class="product-card">
+        {{#if this.thumbnails.length}}
+          <img src="{{this.thumbnails.[0]}}" alt="{{this.title}}" />
+        {{else}}
+          <img src="/images/placeholder.png" alt="No image available" />
+        {{/if}}
+
+        <h3 class="card-title">{{this.title}}</h3>
+
+        <p class="card-desc card-desc--clamp" id="desc-{{this._id}}">
+          {{this.description}}
+        </p>
+        <button type="button" class="toggle-desc" data-target="desc-{{this._id}}">
+          Ver más
+        </button>
+
+        <p class="price">Precio: ${{this.price}}</p>
+
+        <div class="qty-controls" data-id="{{this._id}}">
+          <button type="button" class="btn-decrease" aria-label="Disminuir">−</button>
+          <span class="qty" aria-live="polite">1</span>
+          <button type="button" class="btn-increase" aria-label="Aumentar">+</button>
+        </div>
+
+        {{#if ../username}}
+          <button class="add-to-cart" data-id="{{this._id}}">Agregar al carrito</button>
+        {{else}}
+          <a href="/login?error=Debes%20iniciar%20sesión" class="add-to-cart add-to-cart--ghost">Agregar al carrito</a>
+        {{/if}}
+      </div>
     {{/each}}
-</div>
+  </div>
 
-
-<div>
-    {{#if prevLink}}
-    <a href="{{prevLink}}"><< Anterior</a>
-    {{/if}}
-
-
-    &nbsp; Página {{this.page}} &nbsp;
-
-    {{#if nextLink}}
-    <a href="{{nextLink}}">Siguiente >></a>
-    {{/if}}
-</div>
+  <div class="pagination-links">
+    {{#if prevLink}} <a href="{{prevLink}}">&lt;&lt; Anterior</a> {{/if}}
+    <span>Página {{page}}</span>
+    {{#if nextLink}} <a href="{{nextLink}}">Siguiente &gt;&gt;</a> {{/if}}
+  </div>
 {{else}}
-<h1>No hay productos para mostrar</h1>
+  <h1>No hay productos para mostrar</h1>
 {{/if}}
 
+<script>
+  // Estado para JS (sin espacios ni bloques duplicados)
+  window.CART_ID = {{#if cartId}}"{{cartId}}"{{else}}null{{/if}};
+  window.IS_LOGGED_IN = {{#if username}}true{{else}}false{{/if}};
+</script>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // --- Mensajes en URL ---
+  const urlParams = new URLSearchParams(window.location.search);
+  const errorMessageElement = document.getElementById('errorMessage');
+  if (urlParams.get('error')) {
+    errorMessageElement.innerText = decodeURIComponent(urlParams.get('error'));
+  }
+  if (urlParams.get('message') || urlParams.get('error')) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  // --- Stepper (+ / -) ---
+  document.querySelectorAll('.qty-controls').forEach(ctrl => {
+    const qtyEl = ctrl.querySelector('.qty');
+    const decBtn = ctrl.querySelector('.btn-decrease');
+    const incBtn = ctrl.querySelector('.btn-increase');
+
+    if (decBtn) decBtn.addEventListener('click', () => {
+      qtyEl.textContent = Math.max(1, (parseInt(qtyEl.textContent || '1', 10) - 1));
+    });
+    if (incBtn) incBtn.addEventListener('click', () => {
+      qtyEl.textContent = Math.min(99, (parseInt(qtyEl.textContent || '1', 10) + 1));
+    });
+  });
+
+  // --- Ver más / Ver menos (por ID único en data-target) ---
+  const grid = document.querySelector('.products-grid-container');
+  if (grid) {
+    grid.addEventListener('click', (e) => {
+      const btn = e.target.closest('.toggle-desc');
+      if (!btn) return;
+
+      const targetId = btn.getAttribute('data-target');
+      if (!targetId) return;
+
+      const desc = document.getElementById(targetId);
+      if (!desc) return;
+
+      const expanded = desc.classList.toggle('is-expanded');   // sólo esta card
+      desc.classList.toggle('card-desc--clamp', !expanded);    // aplica/quita clamp
+      btn.textContent = expanded ? 'Ver menos' : 'Ver más';
+
+      // Fallback inline por si algún CSS global fuerza el clamp
+      if (expanded) {
+        desc.style.display = 'block';
+        desc.style.overflow = 'visible';
+        desc.style.webkitLineClamp = 'unset';
+        desc.style.webkitBoxOrient = 'initial';
+      } else {
+        desc.style.display = '';
+        desc.style.overflow = '';
+        desc.style.webkitLineClamp = '';
+        desc.style.webkitBoxOrient = '';
+      }
+    });
+  }
+
+  // --- Agregar al carrito ---
+  document.querySelectorAll('button.add-to-cart').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!window.IS_LOGGED_IN) {
+        window.location.href = '/login?error=Debes%20iniciar%20sesión';
+        return;
+      }
+
+      const prodId = btn.getAttribute('data-id');
+
+      try {
+        // 1) Crear carrito si no existe
+        let cartId = window.CART_ID;
+        if (!cartId) {
+          const createRes = await fetch('/api/carts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          if (!createRes.ok) throw new Error('No se pudo crear el carrito');
+          const createData = await createRes.json();
+          cartId = createData.cart?._id || createData._id;
+          window.CART_ID = cartId;
+
+          const cartLink = document.getElementById('cartLink');
+          if (cartLink && cartId) cartLink.href = `/carts/${cartId}`;
+        }
+
+        // 2) Cantidad elegida en ESTA card
+        const card = btn.closest('.product-card');
+        const qty = Math.max(
+          1,
+          parseInt(card.querySelector('.qty-controls .qty').textContent || '1', 10)
+        );
+
+        // 3) Leer carrito actual para cantidad acumulada
+        const cartRes = await fetch(`/api/carts/${cartId}`);
+        if (!cartRes.ok) throw new Error('No se pudo leer el carrito');
+        const cart = await cartRes.json();
+        const item = (cart.products || []).find(p => (p.product?._id || p.product) == prodId);
+        const target = (item?.quantity || 0) + qty;
+
+        // 4) PUT con la cantidad final
+        btn.disabled = true;
+        const putRes = await fetch(`/api/carts/${cartId}/products/${prodId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ quantity: target })
+        });
+        const data = await putRes.json();
+        btn.disabled = false;
+
+        if (!putRes.ok) {
+          console.error('PUT falló:', data);
+          alert(data.message || 'No se pudo actualizar la cantidad');
+          return;
+        }
+
+        // 5) Reset visual + badge
+        card.querySelector('.qty-controls .qty').textContent = '1';
+        if (window.refreshCartCount) await window.refreshCartCount();
+        alert(`Agregaste ${qty} unidad(es) al carrito`);
+      } catch (err) {
+        console.error(err);
+        alert('Error al agregar al carrito');
+      }
+    });
+  });
+});
+</script>

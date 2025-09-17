@@ -101,34 +101,46 @@ export default class CartRepository {
         }
     }
 
-    async updateProdQuantityToCart(cartId, prodId, quantity) {
-        try {
-            logger.debug(`Iniciando actualización de cantidad de producto ${prodId} en carrito ${cartId} a ${quantity} en el repositorio.`); 
-            const cart = await CartModel.findById(cartId);
-            if (!cart) {
-                logger.warn(`Carrito no encontrado (updateProdQuantityToCart) con ID: ${cartId}`); 
-                throw new Error('Carrito no encontrado');
-            }
-            logger.debug(`Carrito ${cartId} encontrado.`);
-
-            const productInCart = cart.products.find(item => item.product.toString() === prodId);
-            if (!productInCart) {
-                logger.warn(`Producto ${prodId} no encontrado en el carrito ${cartId} para actualizar.`); 
-                throw new Error('Producto no encontrado en el carrito');
-            }
-            logger.debug(`Producto ${prodId} encontrado en carrito ${cartId}. Cantidad actual: ${productInCart.quantity}`); 
-
-            productInCart.quantity = quantity;
-
-            await cart.save();
-            logger.info(`Cantidad de producto ${prodId} en carrito ${cartId} actualizada a ${quantity} y guardada.`); 
-
-            return cart;
-        } catch (error) {
-            logger.error(`Error en CartRepository al actualizar la cantidad del producto ${prodId} en el carrito ${cartId}:`, error); 
-            throw new Error("Error al actualizar la cantidad del producto en el carrito: " + error.message);
-        }
+async updateProdQuantityToCart(cartId, prodId, quantity) {
+  try {
+    const qty = Number(quantity);
+    if (!Number.isFinite(qty) || qty < 0) {
+      throw new Error('Cantidad inválida');
     }
+
+    const cart = await CartModel.findById(cartId);
+    if (!cart) throw new Error('Carrito no encontrado');
+
+    // Buscar el producto en el carrito (comparando como string)
+    const productInCart = cart.products.find(
+      (item) => String(item.product) === String(prodId)
+    );
+
+    if (!productInCart) {
+      // UP SERT: si no existe y qty > 0, lo agregamos
+      if (qty > 0) {
+        cart.products.push({ product: prodId, quantity: qty });
+      }
+      // si qty === 0 y no existe, no hacemos nada
+    } else {
+      if (qty === 0) {
+        // qty = 0 => lo removemos
+        cart.products = cart.products.filter(
+          (item) => String(item.product) !== String(prodId)
+        );
+      } else {
+        productInCart.quantity = qty;
+      }
+    }
+
+    await cart.save();
+    return cart;
+  } catch (error) {
+    throw new Error(
+      'Error al actualizar la cantidad del producto en el carrito: ' + error.message
+    );
+  }
+}
 
     async clearCart(cartId) {
         try {

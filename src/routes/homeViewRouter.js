@@ -6,7 +6,10 @@ import {
     registerUser,
     showLogin,
     loginUser,
-    changePasswordPage
+ showForgotPassword,
+  showChangePassword, // nuevo nombre
+  showResetPassword,
+  logoutUser
 } from "../controllers/homeview.controller.js";
 
 const router = Router();
@@ -24,6 +27,18 @@ router.post("/register", registerUser);
 // Rutas para el inicio de sesión de usuario
 router.get("/login", showLogin);
 router.post("/login", loginUser);
-router.get('/change-password', changePasswordPage);
+router.get('/logout', logoutUser);
+
+router.get('/reset-password', showResetPassword);
+// Rutas para el proceso de "olvidé mi contraseña"
+router.get('/forgot-password', showForgotPassword);
+router.get('/change-password', showChangePassword);
+
+// alias para links antiguos /user/change-password
+router.get('/user/change-password', (req, res) => {
+  const token = req.query.token || '';
+  return res.redirect(`/change-password?token=${encodeURIComponent(token)}`);
+});
+
 
 export default router;

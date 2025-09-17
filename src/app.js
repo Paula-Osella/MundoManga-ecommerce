@@ -1,5 +1,6 @@
 import express from 'express';
 import router from './routes/router.js';
+import homeviewRouter from './routes/homeViewRouter.js';
 import handlebars from 'express-handlebars';
 import session from 'express-session';
 import cookieParser from "cookie-parser";
@@ -11,6 +12,7 @@ import 'dotenv/config';
 import config from './config/config.js';
 import './passport/jwt.js';
 import { logger, morganMiddleware } from './config/logger.js';
+import { sessionLocals } from "./middlewares/sessionLocals.js";
 
 const app = express();
 
@@ -21,8 +23,9 @@ app.use(express.static(__dirname + '/public'));
 app.use(cookieParser()); 
 
 
-app.use(morganMiddleware);
 
+app.use(morganMiddleware);
+app.use(sessionLocals);
 
 app.engine('handlebars', handlebars.engine({
     helpers: {
@@ -58,10 +61,9 @@ app.use(passport.session());
 initMongoDB()
     .then(() => logger.info('Base de datos conectada exitosamente')) 
     .catch((error) => logger.error('Error al conectar a la base de datos:', error)); 
-
-
-app.use('/', router);
-
+// ¡CORRECCIÓN! Usamos el router de homeview que contiene TODAS tus rutas.
+app.use('/', homeviewRouter); // vistas
+app.use('/', router);         // apis + otros
 
 app.use((err, req, res, next) => {
     logger.error(`Error en la aplicación: ${err.message}`, err.stack); 

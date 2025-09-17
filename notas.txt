@@ -53,3 +53,36 @@ POST/PUT ADD PRODUCT CART:
     "quantity": 1
 }
 
+
+
+login = async (req, res, next) => {
+    try {
+        // Llama al servicio de login
+        const token = await this.service.login(req.body);
+
+        // La condición es más robusta:
+        // - req.is('json'): Detecta si el Content-Type de la solicitud es JSON.
+        // - req.accepts('json'): Detecta si el cliente acepta una respuesta JSON.
+        // Si al menos una de las dos es verdadera, asumimos que es un cliente de API.
+        if (req.is('json') || req.accepts('json')) {
+            // Caso 1: Cliente API (Postman). Responde con éxito en formato JSON.
+            res.status(200).json({ status: "success", token: token });
+        } else {
+            // Caso 2: Navegador web. Redirige con el token en una cookie.
+            res.cookie('jwt', token, { httpOnly: true })
+               .redirect('/products?message=login_exitoso');
+        }
+
+    } catch (error) {
+        console.error("Login fallido:", error.message);
+
+        // Manejo de errores: también usamos la condición robusta para responder.
+        if (req.is('json') || req.accepts('json')) {
+            // Cliente API: Responde con error 401 en JSON.
+            res.status(401).json({ status: "error", message: error.message });
+        } else {
+            // Navegador: Redirige a la página de login con el error en la URL.
+            res.redirect('/login?error=' + encodeURIComponent(error.message));
+        }
+    }
+};
