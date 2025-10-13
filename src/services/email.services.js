@@ -4,32 +4,27 @@ import config from "../config/config.js";
 import { purchaseTicketTemplate } from "../views/templates/purchaseTicketTemplate.js";
 import { changePasswordTemplate } from "../views/templates/changePasswordTemplate.js";
 
-// Transporter único
 export const transporter = createTransport({
   service: "gmail",
   secure: true,
   port: 587,
-  auth: {
-    user: config.mailUser, // ej: process.env.GMAIL
-    pass: config.mailPass, // ej: process.env.PASS_GOOGLE
-  },
+  auth: { user: config.mailUser, pass: config.mailPass },
 });
 
-// ---- Emails de compra (ya usados en cart.services.js)
-export const gmailConfig = (ticket, email) => ({
+// ⬇️ aceptar items y pasarlos al template
+export const gmailConfig = (ticket, email, items = []) => ({
   from: config.mailUser,
   to: email,
   subject: "Purchase Ticket",
-  html: purchaseTicketTemplate(ticket, email),
+  html: purchaseTicketTemplate(ticket, email, items),
 });
 
-// Helper que algunos módulos importan (no lo elimines)
-export const sendMailGmail = async (ticket, email) => {
-  const mailOptions = gmailConfig(ticket, email);
+export const sendMailGmail = async (ticket, email, items = []) => {
+  const mailOptions = gmailConfig(ticket, email, items);
   return transporter.sendMail(mailOptions);
 };
 
-// ---- Email para reset de contraseña
+// (lo de change password queda igual)
 export const gmailChangePasswordConfig = (resetLink, email) => ({
   from: config.mailUser,
   to: email,

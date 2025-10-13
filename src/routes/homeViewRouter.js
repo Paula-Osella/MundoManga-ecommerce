@@ -12,6 +12,9 @@ import {
   logoutUser
 } from "../controllers/homeview.controller.js";
 
+import { showReceipt } from '../controllers/purchase.controller.js';
+
+
 const router = Router();
 
 // Ruta para obtener todos los productos
@@ -40,5 +43,6 @@ router.get('/user/change-password', (req, res) => {
   return res.redirect(`/change-password?token=${encodeURIComponent(token)}`);
 });
 
+router.get('/purchase/:code', showReceipt);
 
 export default router;

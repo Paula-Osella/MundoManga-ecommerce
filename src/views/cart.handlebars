@@ -1,75 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carrito de Compras</title>
-  <link rel="stylesheet" href="/css/style.css">
-
-  <style>
-    /* ====== Contenedor ====== */
-    .cart-container { max-width: 980px; margin: 20px auto; padding: 20px; background: var(--card-background); border-radius: 10px; box-shadow: 0 5px 15px var(--shadow-color); }
-
-    /* ====== Fila (grid) ====== */
-    .cart-row {
-      display: grid;
-      grid-template-columns: auto 1fr auto auto;
-      gap: 14px;
-      align-items: center;
-      padding: 14px 8px;
-      border-bottom: 1px solid var(--border-color);
-      transition: opacity .25s ease, transform .25s ease, height .25s ease, margin .25s ease, padding .25s ease;
-    }
-    .cart-row.removing { opacity: 0; transform: translateY(-6px); height: 0; margin: 0; padding: 0; overflow: hidden; }
-
-    /* ====== Miniatura ====== */
-    .cart-thumb { width: 68px; height: 92px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); }
-
-    /* ====== Info ====== */
-    .cart-info h4 { margin: 0 0 4px 0; font-family: var(--heading-font); color: var(--primary-color); }
-    .cart-price-unit { margin: 0 0 6px 0; color: var(--text-subtle); font-size: .95rem; }
-
-    /* ====== Qty (mismo look que productos) ====== */
-    .qty-controls { display: inline-flex; align-items: center; gap: 8px; }
-    .qty-controls .qty { min-width: 28px; text-align: center; font-weight: 700; font-size: 1rem; }
-    .qty-controls button {
-      padding: 4px 10px; border: none; background: var(--primary-color);
-      color: #fff; border-radius: 6px; cursor: pointer; transition: background .2s ease, transform .2s ease;
-    }
-    .qty-controls button:hover { background: #C0392B; transform: translateY(-1px); }
-
-    /* ====== Subtotal + total (transición suave) ====== */
-    .cart-subtotal, #cartTotalAmount { display: inline-block; transition: opacity .18s ease, transform .18s ease; }
-    .value-updating { opacity: .25; transform: scale(0.98); }
-
-    /* ====== Footer total ====== */
-    .cart-total { font-size: 1.2rem; font-weight: 700; text-align: right; margin-top: 16px; }
-
-    /* ====== Indicador de guardado ====== */
-    .cart-saving {
-      display: inline-flex; align-items: center; gap: 8px; margin-right: 10px; vertical-align: middle;
-    }
-    .cart-saving-dot {
-      width: 8px; height: 8px; border-radius: 999px; background: var(--accent-color);
-      animation: pulse .8s ease-in-out infinite;
-    }
-    .cart-saving-text { color: var(--text-subtle); font-size: .9rem; }
-    @keyframes pulse { 0%,100%{ transform: scale(1); opacity:.8 } 50%{ transform: scale(1.4); opacity:.4 } }
-
-    /* ====== Botón eliminar ====== */
-    .cart-remove {
-      background: transparent; border: none; color: var(--primary-color); cursor: pointer;
-      padding: 6px 8px; border-radius: 6px; transition: background-color .2s ease, transform .2s ease;
-    }
-    .cart-remove:hover { background: rgba(231,76,60,.1); transform: translateY(-1px); }
-  </style>
-</head>
-<body>
 <div class="cart-container">
   <h1>🛒 Detalles del Carrito</h1>
 
   {{#if cart}}
-    <h2 style="margin-top:0; color: var(--text-subtle); font-size:1rem;">Carrito ID: {{cart._id}}</h2>
+    <h2 class="cart-id">Carrito ID: {{cart._id}}</h2>
 
     <div class="cart" data-cart-id="{{cart._id}}">
       <div class="cart-items">
@@ -106,9 +39,14 @@
       <div class="cart-total">
         <span class="cart-saving" hidden>
           <span class="cart-saving-dot"></span>
-          <span class="cart-saving-text">Guardando…</span>
         </span>
         Total: <span id="cartTotalAmount">${{cartTotal}}</span>
+      </div>
+
+      <div class="btn-center">
+        <button class="btn btn--primary" id="checkoutBtn">
+          <i class="fas fa-credit-card"></i> Finalizar compra
+        </button>
       </div>
     </div>
   {{else}}
@@ -116,123 +54,5 @@
   {{/if}}
 </div>
 
-<script>
-  (function () {
-    const cartEl   = document.querySelector('.cart');
-    if (!cartEl) return;
-
-    const listEl   = cartEl.querySelector('.cart-items');
-    const totalEl  = document.getElementById('cartTotalAmount');
-    const savingEl = cartEl.querySelector('.cart-saving');
-    const CART_ID  = cartEl.dataset.cartId;
-
-    const money = n => {
-      const num = Math.round((Number(n) || 0) * 100) / 100;
-      return '$' + num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    };
-
-    const rowSubtotalNum = (row) => {
-      const unit = parseFloat(row.querySelector('.cart-price-unit')?.dataset.unit || '0');
-      const qty  = parseInt(row.querySelector('.qty')?.textContent || '0', 10);
-      return unit * qty;
-    };
-
-    const computeTotal = () => {
-      let sum = 0;
-      listEl.querySelectorAll('.cart-row').forEach(row => {
-        if (!row.classList.contains('removing')) sum += rowSubtotalNum(row);
-      });
-      return sum;
-    };
-
-    const swapValue = (el, newText) => {
-      el.classList.add('value-updating');
-      setTimeout(() => {
-        el.textContent = newText;
-        el.classList.remove('value-updating');
-      }, 120);
-    };
-
-    const setSaving = (on) => { if (savingEl) savingEl.hidden = !on; };
-
-    const timers = new Map();   // productId -> timeoutId
-    const inFlight = new Map(); // productId -> AbortController
-
-    const schedulePUT = (productId, qty, row) => {
-      if (timers.has(productId)) clearTimeout(timers.get(productId));
-      if (inFlight.has(productId)) { inFlight.get(productId).abort(); inFlight.delete(productId); }
-
-      setSaving(true);
-      const tid = setTimeout(async () => {
-        const ctrl = new AbortController();
-        inFlight.set(productId, ctrl);
-        try {
-          const res = await fetch(`/api/carts/${CART_ID}/products/${productId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ quantity: qty }),
-            signal: ctrl.signal
-          });
-          if (!res.ok) throw new Error('PUT failed');
-        } catch (e) {
-          const qtyEl = row.querySelector('.qty');
-          qtyEl.textContent = Math.max(1, parseInt(qtyEl.textContent || '1', 10));
-          const subEl = row.querySelector('[data-subtotal]');
-          swapValue(subEl, money(rowSubtotalNum(row)));
-          swapValue(totalEl, money(computeTotal()));
-          alert('No se pudo actualizar la cantidad. Intenta de nuevo.');
-        } finally {
-          inFlight.delete(productId);
-          if (timers.size === 0 && inFlight.size === 0) setSaving(false);
-        }
-      }, 300);
-
-      timers.set(productId, tid);
-      setTimeout(() => timers.delete(productId), 320);
-    };
-
-    listEl.addEventListener('click', (e) => {
-      const row = e.target.closest('.cart-row');
-      if (!row) return;
-
-      const productId = row.dataset.productId;
-      const qtyEl = row.querySelector('.qty');
-      const subEl = row.querySelector('[data-subtotal]');
-
-      if (e.target.closest('.btn-increase') || e.target.closest('.btn-decrease')) {
-        const isInc = !!e.target.closest('.btn-increase');
-        const current = parseInt(qtyEl.textContent || '1', 10);
-        const next = isInc ? Math.min(99, current + 1) : Math.max(1, current - 1);
-        if (next === current) return;
-
-        qtyEl.textContent = next;
-        swapValue(subEl, money(rowSubtotalNum(row)));
-        swapValue(totalEl, money(computeTotal()));
-        schedulePUT(productId, next, row);
-        return;
-      }
-
-      if (e.target.closest('.cart-remove')) {
-        row.classList.add('removing');
-        setSaving(true);
-        setTimeout(async () => {
-          row.remove();
-          swapValue(totalEl, money(computeTotal()));
-          try {
-            const res = await fetch(`/api/carts/${CART_ID}/products/${productId}`, { method: 'DELETE' });
-            if (!res.ok) throw new Error('DELETE failed');
-          } catch (err) {
-            alert('No se pudo eliminar el producto. Refrescá la página.');
-          } finally {
-            setSaving(false);
-          }
-        }, 260);
-      }
-    });
-  })();
-</script>
-
-  <!-- Font Awesome; si ya lo cargas global, podés quitar esta línea -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
-</body>
-</html>
+<!-- JS específico del carrito -->
+<script src="/js/cart.js" defer></script>

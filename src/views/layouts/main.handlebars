@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mundo Manga Online</title>
+
   <link rel="stylesheet" href="/css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 </head>
-<body>
+<body
+  data-username="{{username}}"
+  data-cart-id="{{cartId}}"
+>
   <header>
     <a href="/products" class="header-logo-link">
       <h1>Mundo Manga</h1>
     </a>
     <h2>Tienda de Mangas Online</h2>
     <nav>
-      {{!-- Si ya viene cartId en el render del servidor, úsalo; si no, dejamos # y lo setea el JS --}}
       <a href="{{#if cartId}}/carts/{{cartId}}{{else}}#{{/if}}" id="cartLink">
         <i class="fas fa-shopping-cart"></i> Ver carrito
         <span id="cartCountBadge" style="display:none; margin-left:6px; padding:2px 8px; border-radius:999px; background:#fff; color:#E74C3C; font-weight:700; font-size:12px;">0</span>
       </a>
 
       {{#if username}}
-        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+        <a href="/logout" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
       {{else}}
         <a href="/login"><i class="fas fa-user"></i> Login</a>
       {{/if}}
@@ -33,7 +36,7 @@
   </main>
 
   {{#if username}}
-    <div id="welcomeToast" class="welcome-toast">
+    <div id="welcomeToast" class="welcome-toast" aria-live="polite" aria-atomic="true">
       <span class="toast-message">¡Bienvenido de nuevo, {{username}}!</span>
     </div>
   {{/if}}
@@ -42,92 +45,14 @@
     <p>&copy; 2024 Mundo Manga - Tienda de mangas online - Todos los derechos reservados.</p>
   </footer>
 
-  <script>
-    // Toast
-    (function () {
-      const welcomeToast = document.getElementById('welcomeToast');
-      if (welcomeToast) {
-        welcomeToast.classList.add('show');
-        setTimeout(() => welcomeToast.classList.remove('show'), 4000);
-      }
-    })();
+  <!-- Contenedor del toast global -->
+  <div id="appToast" class="app-toast" hidden>
+    <i class="app-toast__icon fas fa-check-circle" aria-hidden="true"></i>
+    <span class="app-toast__text"></span>
+  </div>
 
-    // Variables globales (si la vista hija no las seteó)
-    window.CART_ID = window.CART_ID || {{#if cartId}}"{{cartId}}"{{else}}null{{/if}};
-    window.IS_LOGGED_IN = window.IS_LOGGED_IN || {{#if username}}true{{else}}false{{/if}};
-
-    // Refrescar badge del carrito
-    async function refreshCartCount() {
-      try {
-        const badge = document.getElementById('cartCountBadge');
-        if (!badge) return;
-
-        if (!window.CART_ID || !window.IS_LOGGED_IN) {
-          badge.style.display = 'none';
-          return;
-        }
-
-        const res = await fetch(`/api/carts/${window.CART_ID}`);
-        if (res.status === 401) {
-          // Sin sesión / cookie expirada => ocultar badge y salir
-          badge.style.display = 'none';
-          return;
-        }
-        if (!res.ok) throw new Error();
-
-        const cart = await res.json();
-        const totalQty = (cart.products || []).reduce((acc, it) => acc + (it.quantity || 0), 0);
-        badge.textContent = totalQty;
-        badge.style.display = totalQty > 0 ? 'inline-block' : 'none';
-      } catch (_) {
-        // silenciar errores del contador
-      }
-    }
-    window.refreshCartCount = refreshCartCount;
-
-    // Ajustar href del carrito con JS si CART_ID aparece después (p.ej. cuando se crea)
-    function syncCartLink() {
-      const link = document.getElementById('cartLink');
-      if (!link) return;
-      if (window.CART_ID && window.IS_LOGGED_IN) {
-        link.href = `/carts/${window.CART_ID}`;
-      } else {
-        link.href = '#';
-      }
-    }
-
-    // Si no hay sesión, al click del carrito redirigimos a login
-    (function protectCartLink() {
-      const link = document.getElementById('cartLink');
-      if (!link) return;
-      link.addEventListener('click', (e) => {
-        if (!window.IS_LOGGED_IN) {
-          e.preventDefault();
-          window.location.href = '/login?error=Debes%20iniciar%20sesión';
-        }
-      });
-    })();
-
-    document.addEventListener('DOMContentLoaded', () => {
-      syncCartLink();
-      refreshCartCount();
-    });
-
-      (function protectCartLink() {
-    const link = document.getElementById('cartLink');
-    if (!link) return;
-
-    // si ya estoy viendo /carts, no interceptar
-    const alreadyInCart = location.pathname.startsWith('/carts/');
-    if (alreadyInCart) return;
-
-    link.addEventListener('click', (e) => {
-      if (!window.IS_LOGGED_IN) {
-        e.preventDefault();
-        window.location.href = '/login?error=Debes%20iniciar%20sesión';
-      }
-    });
-  })();
-  </script>
+  <!-- JS externos -->
+  <script src="/js/app-toast.js" defer></script>
+  <script src="/js/main-layout.js" defer></script>
 </body>
 </html>

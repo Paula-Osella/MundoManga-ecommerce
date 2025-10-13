@@ -10,6 +10,7 @@ import passport from 'passport';
 import MongoStore from 'connect-mongo';
 import 'dotenv/config'; 
 import config from './config/config.js';
+import { authMiddleware } from './middlewares/auth.middleware.js';
 import './passport/jwt.js';
 import { logger, morganMiddleware } from './config/logger.js';
 import { sessionLocals } from "./middlewares/sessionLocals.js";
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.static(__dirname + '/public')); 
 app.use(cookieParser()); 
+app.use(authMiddleware);
 
 
 

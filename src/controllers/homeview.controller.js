@@ -76,47 +76,39 @@ export const getAllProducts = async (req, res) => {
 // Obtener carrito por ID
 export const getCartById = async (req, res) => {
   const { cid } = req.params;
-
   try {
-    // === detectar sesión como en getAllProducts ===
-    const token = req.cookies.jwt;
-    let username = null;
+    // 1) si el middleware puso user, lo usamos
+    const username = res.locals.user?.email || null;
+
+    // 2) cartId preferente: el del usuario; sino, el de la URL
     let cartId = null;
-
-    if (token) {
-      try {
-        const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        username = decoded.email || null;
-
-        if (username) {
-          const user = await userService.getUserByEmail(username);
-          if (user && user.cart) cartId = String(user.cart);
-        }
-      } catch {
-        // token inválido → seguimos como anónimo
-      }
+    if (username) {
+      const user = await userService.getUserByEmail(username);
+      cartId = user?.cart ? String(user.cart) : null;
     }
-
-    // si no pudimos deducir cartId desde el user, usamos el de la URL
     if (!cartId) cartId = cid;
 
-    // === cargar carrito ===
+    // 3) cargar carrito
     const cart = await CartModel.findById(cid).populate("products.product").lean();
     if (!cart) return res.status(404).send("Carrito no encontrado");
 
     cart.products.forEach(item => item.total = item.product.price * item.quantity);
     const cartTotal = cart.products.reduce((total, item) => total + item.total, 0);
 
-    // 👇 pasar username y cartId al layout
-   // en tu homeview controller
-res.render('cart', { layout: 'main', cart, cartTotal });
-
-
+    // 4) render con layout principal y variables para el header
+    return res.render('cart', {
+      layout: 'main',
+      cart,
+      cartTotal,
+      username,
+      cartId
+    });
   } catch (error) {
     console.error("Error al obtener el carrito:", error.message);
     res.status(500).send("Error al cargar el carrito");
   }
 };
+
 // Mostrar página de registro
 export const showRegister = async (req, res) => {
   try {

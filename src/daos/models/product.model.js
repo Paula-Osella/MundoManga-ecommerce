@@ -9,10 +9,10 @@ const ProductsCollection = "products";
 const productSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  code: { type: String, required: true, unique: true }, // <--- Añadir este campo
+  code: { type: String, required: true, unique: true }, 
   price: { type: Number, required: true },
   stock: { type: Number, required: true },
-  category: { type: String, required: true }, // <--- Considera añadir también category y author, y thumbnails
+  category: { type: String, required: true }, 
   author: { type: String, required: false },
   status: { type: Boolean, default: true },
   thumbnails: { type: [String], default: [] }

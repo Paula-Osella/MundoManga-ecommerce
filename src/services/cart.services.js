@@ -82,99 +82,66 @@ class CartServices {
 
 
 
-    async completePurchase(cartId, userEmail) {
+async completePurchase(cartId, userEmail) {
+  try {
+    const cart = await cartRepository.getById(cartId);
+    const purchaser = userEmail || cart.userEmail;
+    if (!purchaser) throw new Error('Correo del usuario no disponible');
 
-        try {
+    let totalAmount = 0;
+    const productsOutOfStock = [];
+    const updatedProducts = [];
+    const purchasedItems = [];
 
-            const cart = await cartRepository.getById(cartId);
+    for (const item of cart.products) {
+      const product = await ProductModel.findById(item.product._id);
+      if (!product) continue;
 
+      if (product.stock >= item.quantity) {
+        product.stock -= item.quantity;
+        await product.save();
 
+        const subtotal = product.price * item.quantity;
+        totalAmount += subtotal;
+        updatedProducts.push(item);
 
-            const purchaser = userEmail || cart.userEmail;
-
-
-
-            if (!purchaser) {
-
-                throw new Error('Correo del usuario no disponible');
-
-            }
-
-
-
-            let totalAmount = 0;
-
-            const productsOutOfStock = [];
-
-            const updatedProducts = [];
-
-
-
-            for (let item of cart.products) {
-
-                const product = await ProductModel.findById(item.product._id);
-
-
-
-                if (product.stock >= item.quantity) {
-
-                    product.stock -= item.quantity;
-
-                    await product.save();
-
-                    totalAmount += product.price * item.quantity;
-
-                    updatedProducts.push(item);
-
-                } else {
-
-                    productsOutOfStock.push(product.title);
-
-                }
-
-            }
-
-
-
-            cart.products = updatedProducts;
-
-            await cart.save();
-
-
-
-            const ticket = await ticketService.createTicketFromCart(totalAmount, purchaser);
-
-
-
-            await sendMailGmail(ticket, purchaser); // Enviar email con el ticket
-
-            console.log("Email enviado al usuario con el ticket de compra.");
-
-
-
-            await cartRepository.clearCart(cartId);
-
-
-
-            return {
-
-                ticket,
-
-                message: "Compra realizada con éxito.",
-
-                productsOutOfStock
-
-            };
-
-
-
-        } catch (error) {
-
-            throw new Error("Error completing purchase: " + error.message);
-
-        }
-
+        purchasedItems.push({
+          title: product.title,
+          price: product.price,
+          quantity: item.quantity,
+          subtotal
+        });
+      } else {
+        productsOutOfStock.push(product.title);
+      }
     }
+
+    // Persisto solo lo comprado (opcional, igual luego limpio)
+    cart.products = updatedProducts;
+    await cart.save();
+
+    // Creo ticket con ítems
+    const ticket = await ticketService.createTicketFromCart(totalAmount, purchaser, purchasedItems);
+
+    // Email NO bloqueante (respuesta más rápida)
+(async () => {
+  try {
+    await sendMailGmail(ticket, purchaser, purchasedItems);
+  } catch (e) {
+    console.error('Error enviando mail de ticket:', e.message);
+  }
+})();
+
+    // Limpio carrito
+    await cartRepository.clearCart(cartId);
+
+    return { ticket, message: "Compra realizada con éxito.", productsOutOfStock };
+  } catch (error) {
+    throw new Error("Error completing purchase: " + error.message);
+  }
+}
+
+
 
 }
 

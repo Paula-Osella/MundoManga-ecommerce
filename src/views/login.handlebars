@@ -1,64 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="/css/style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
-
 <body>
-    <main class="auth-page-main">
-        <div class="auth-container">
-            <h1>Iniciar Sesión</h1>
-            {{!-- Mensajes de Handlebars pasados por el controlador (si los usaras así) --}}
-            {{#if message}}
-                <p class="auth-message-error">{{message}}</p>
-            {{/if}}
+  <main class="auth-page-main">
+    <div class="auth-container">
+      <h1>Iniciar Sesión</h1>
 
-            {{!-- Mensajes desde parámetros de URL --}}
-            <p id="successMessage" class="auth-message"></p>
-            <p id="errorMessage" class="auth-message-error"></p>
+      {{!-- Mensajes renderizados desde el backend --}}
+      {{#if message}}
+        <p class="auth-message-error">{{message}}</p>
+      {{/if}}
 
-            <form action="/login" method="post" class="auth-form">
-                <input type="email" name="email" placeholder="Correo electrónico" required class="auth-input">
-                <input type="password" name="password" placeholder="Contraseña" required class="auth-input">
-                <button type="submit" class="auth-button">Iniciar Sesión</button>
-            </form>
-            <div class="auth-links">
-                <p>¿No tienes cuenta? <a href="/register" class="auth-link">Regístrate aquí</a></p>
-                <p><a href="/forgot-password" class="auth-link">¿Olvidaste tu contraseña?</a></p> {{!-- Actualizado --}}
-            </div>
-        </div>
-    </main>
+      {{!-- Mensajes manejados vía JS (query params) --}}
+      <p id="successMessage" class="auth-message"></p>
+      <p id="errorMessage" class="auth-message-error"></p>
 
-    <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const successParam = urlParams.get('message');
-    const errorParam = urlParams.get('error');
-    const successMessageElement = document.getElementById('successMessage');
-    const errorMessageElement = document.getElementById('errorMessage');
+      <form action="/login" method="post" class="auth-form">
+        <input type="email" name="email" placeholder="Correo electrónico" required class="auth-input">
+        <input type="password" name="password" placeholder="Contraseña" required class="auth-input">
+        <button type="submit" class="auth-button">Iniciar Sesión</button>
+      </form>
 
-    if (successParam === 'registro_exitoso') {
-        successMessageElement.innerText = '¡Registro exitoso! Por favor, inicia sesión.';
-        successMessageElement.style.color = 'var(--secondary-color)';
-    } else if (successParam === 'restablecimiento_exitoso') {
-        successMessageElement.innerText = 'Contraseña restablecida correctamente. Por favor, inicia sesión.';
-        successMessageElement.style.color = 'var(--secondary-color)';
-    } else if (successParam === 'logout_exitoso') {
-        successMessageElement.innerText = '¡Has cerrado sesión correctamente!';
-        successMessageElement.style.color = 'var(--secondary-color)';
-    } else if (errorParam) {
-        errorMessageElement.innerText = decodeURIComponent(errorParam);
-    }
+      <div class="auth-links">
+        <p>¿No tienes cuenta? <a href="/register" class="auth-link">Regístrate aquí</a></p>
+        <p><a href="/forgot-password" class="auth-link">¿Olvidaste tu contraseña?</a></p>
+      </div>
+    </div>
+  </main>
 
-    if (successParam || errorParam) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-});
-    </script>
+  <!-- Script externo -->
+  <script src="/js/login.js" defer></script>
 </body>
-
 </html>

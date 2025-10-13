@@ -1,89 +1,57 @@
-export const purchaseTicketTemplate = (ticket) => `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purchase Confirmation</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
-        }
-        h2 {
-            color: #333;
-        }
-        p {
-            color: #555;
-        }
-        .ticket-info {
-            text-align: left;
-            margin-top: 20px;
-        }
-        .ticket-info table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        .ticket-info th, .ticket-info td {
-            padding: 8px;
-            border: 1px solid #ddd;
-        }
-        .ticket-info th {
-            background-color: #f1f1f1;
-        }
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #888;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Purchase Confirmation</h2>
-        <p>Thank you for your purchase! We have received your order and generated a purchase ticket.</p>
-        <p>Ticket Details:</p>
-        
-        <div class="ticket-info">
-            <table>
-                <tr>
-                    <th>Ticket ID</th>
-                    <td>${ticket.id}</td>
-                </tr>
-                <tr>
-                    <th>Code</th>
-                    <td>${ticket.code}</td>
-                </tr>
-                <tr>
-                    <th>Total Purchase</th>
-                    <td>$${ticket.amount}</td>
-                </tr>
-                <tr>
-                    <th>Purchaser Email</th>
-                    <td>${ticket.purchaser}</td>
-                </tr>
-                <tr>
-                    <th>Purchase Date</th>
-                    <td>${ticket.purchase_datetime}</td>
-                </tr>
-            </table>
-        </div>
+export const purchaseTicketTemplate = (ticket, email, items = []) => {
+  const date = new Date(ticket.purchase_datetime || Date.now()).toLocaleString('es-AR');
+  const amount = Number(ticket.amount || 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        <p>If you have any questions or need further information, please feel free to contact us.</p>
+  const itemsRows = items.map(it => `
+    <tr>
+      <td style="padding:6px 8px; border-bottom:1px solid #eee;">${it.title}</td>
+      <td style="padding:6px 8px; border-bottom:1px solid #eee; text-align:center;">${it.quantity}</td>
+      <td style="padding:6px 8px; border-bottom:1px solid #eee; text-align:right;">$${Number(it.price).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
+      <td style="padding:6px 8px; border-bottom:1px solid #eee; text-align:right;"><strong>$${Number(it.subtotal).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</strong></td>
+    </tr>
+  `).join('');
 
-        <p class="footer">This is an automated message, please do not reply.</p>
-    </div>
-</body>
-</html>
-`;
+  return `
+  <div style="font-family: Arial, Helvetica, sans-serif; color:#333; padding:24px; background:#f7f7f9;">
+    <table width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;border:1px solid #eee;">
+      <tr>
+        <td style="background:#E74C3C; color:#fff; padding:18px 24px;">
+          <h1 style="margin:0; font-size:20px;">Mundo Manga · Ticket de compra</h1>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:20px 24px;">
+          <p>Hola <strong>${email}</strong>, ¡gracias por tu compra! Este es tu comprobante:</p>
+
+          <table style="width:100%; border-collapse:collapse; margin-top:12px;">
+            <tr><td style="color:#777;">Código</td><td style="text-align:right;"><strong>${ticket.code}</strong></td></tr>
+            <tr><td style="color:#777;">Fecha</td><td style="text-align:right;">${date}</td></tr>
+            <tr><td style="color:#777;">Comprador</td><td style="text-align:right;">${ticket.purchaser}</td></tr>
+          </table>
+
+          <h3 style="margin:18px 0 8px;">Productos</h3>
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="text-align:left; border-bottom:2px solid #eee; padding:6px 8px;">Producto</th>
+                <th style="text-align:center; border-bottom:2px solid #eee; padding:6px 8px;">Cant.</th>
+                <th style="text-align:right; border-bottom:2px solid #eee; padding:6px 8px;">Precio</th>
+                <th style="text-align:right; border-bottom:2px solid #eee; padding:6px 8px;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>${itemsRows}</tbody>
+          </table>
+
+          <p style="text-align:right; margin-top:12px; font-size:16px;">Total: <strong>$${amount}</strong></p>
+
+          <p style="margin-top:18px;">Ante cualquier consulta, respondé este email. ¡Gracias por elegirnos! 🙌</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="background:#fafafa; color:#999; font-size:12px; padding:12px 24px; text-align:center;">
+          © ${new Date().getFullYear()} Mundo Manga
+        </td>
+      </tr>
+    </table>
+  </div>`;
+};

@@ -29,6 +29,7 @@ router.route("/:cartId/products/:prodId")
 router.route("/:cartId/purchase")
   // Comprar: USER o ADMIN
   .post(cookieAuth, roleAuth("USER", "ADMIN"), cartController.completePurchase);
+router.post("/:cartId/checkout", cookieAuth, roleAuth("USER", "ADMIN"), cartController.completePurchase);
 
 export default router;
 

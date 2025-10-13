@@ -1,5 +1,5 @@
 import { ticketRepository } from "../repository/ticket.repository.js";
-
+import Ticket from '../daos/models/ticket.model.js';
 import ticketDAO from "../daos/mongodb/ticket.dao.js";  // Importamos la instancia de DAO
 
 class TicketService {
@@ -27,13 +27,14 @@ class TicketService {
         }
     }
 
-    async createTicketFromCart(amount, purchaser) {
-        try {
-            const ticket = await this.repository.createTicketFromCart(amount, purchaser);
-            return ticket;
-        } catch (error) {
-            throw new Error("Error creating ticket from cart: " + error.message);
-        }
-    }
+  async createTicketFromCart(amount, purchaser, items = []) {
+    const ticket = await Ticket.create({
+      amount,
+      purchaser,
+      items,
+    });
+    return ticket;
+  }
+
 }
 export const ticketService = new TicketService(ticketRepository);

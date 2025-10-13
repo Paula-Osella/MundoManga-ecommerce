@@ -1,29 +1,24 @@
-// models/ticket.model.js
 import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
-import { v4 as uuidv4 } from 'uuid'; 
+const itemSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  price: { type: Number, required: true },
+  quantity: { type: Number, required: true },
+  subtotal: { type: Number, required: true },
+}, { _id: false });
 
 const ticketSchema = new mongoose.Schema({
-    code: {
-      
-        type: String,
-        unique: true,
-        default: () => uuidv4().split('-')[0] 
-    },
-    purchase_datetime: {
-        type: Date,
-        default: Date.now,  
-    },
-    amount: {
-        type: Number,
-        required: true,
-    },
-    purchaser: {
-        type: String,
-        required: true,  
-    },
+  code: {
+    type: String,
+    unique: true,
+    default: () => uuidv4().split('-')[0]
+  },
+  purchase_datetime: { type: Date, default: Date.now },
+  amount: { type: Number, required: true },
+  purchaser: { type: String, required: true },
+  items: { type: [itemSchema], default: [] }
 });
 
 const Ticket = mongoose.model('Ticket', ticketSchema);
-
 export default Ticket;
