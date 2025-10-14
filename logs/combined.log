@@ -1381,3 +1381,6 @@
 {"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-09-27 00:02:04"}
 {"level":"info","message":"Carrito 6887de57816591de863dbd2d limpiado en DAO.","timestamp":"2025-09-27 00:02:04"}
 {"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-09-27 00:02:05"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-14 19:30:31"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-14 19:30:31"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-14 19:30:33"}
