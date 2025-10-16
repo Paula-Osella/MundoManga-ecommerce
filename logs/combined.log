@@ -1386,3 +1386,13 @@
 {"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-14 19:30:33"}
 {"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-16 16:43:07"}
 {"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-16 16:43:09"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-16 18:04:30"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-16 18:04:32"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-16 18:05:05"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-16 18:05:05"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-16 18:05:06"}
+{"level":"warn","message":"Ruta no encontrada: GET /favicon.ico","timestamp":"2025-10-16 18:05:08"}
+{"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-10-16 18:06:49"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-16 18:11:12"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-16 18:11:12"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-16 18:11:13"}
