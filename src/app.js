@@ -30,29 +30,29 @@ app.use(sessionLocals);
 
 // Handlebars
 app.engine(
-  'handlebars',
-  handlebars.engine({
-    helpers: {
-      eq: function (a, b) {
-        return a === b;
-      },
-    },
-  })
+    'handlebars',
+    handlebars.engine({
+        helpers: {
+            eq: function (a, b) {
+                return a === b;
+            },
+        },
+    })
 );
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
 // Sesiones (MongoStore)
 const storeConfig = {
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URL,
-    crypto: { secret: process.env.SECRET_KEY },
-    ttl: 180,
-  }),
-  secret: process.env.SECRET_KEY,
-  resave: true,
-  saveUninitialized: true,
-  cookie: { maxAge: 180000 },
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+        crypto: { secret: process.env.SECRET_KEY },
+        ttl: 180,
+    }),
+    secret: process.env.SECRET_KEY,
+    resave: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 180000 },
 };
 app.use(session(storeConfig));
 
@@ -62,25 +62,34 @@ app.use(passport.session());
 
 // Conexión a la base de datos (en serverless corre en el cold start)
 initMongoDB()
-  .then(() => logger.info('Base de datos conectada exitosamente'))
-  .catch((error) => logger.error('Error al conectar a la base de datos:', error));
+    .then(() => logger.info('Base de datos conectada exitosamente'))
+    .catch((error) => logger.error('Error al conectar a la base de datos:', error));
 
-// Rutas
+// ✅ Rutas básicas para evitar 404 y probar salud
+app.get('/health', (req, res) => {
+    res.json({ ok: true, ts: Date.now() });
+});
+
+app.get('/', (req, res) => {
+    // si preferís una vista, cambiá por: res.render('home');
+    res.send('Mundo Manga backend está OK ✅');
+});
+
+// Rutas de la app
 app.use('/', homeviewRouter); // vistas
 app.use('/', router);         // APIs + otros
 
 // Manejo de errores
 app.use((err, req, res, next) => {
-  logger.error(`Error en la aplicación: ${err.message}`, err.stack);
-  res.status(500).json({ error: 'Ocurrió un error en el servidor' });
+    logger.error(`Error en la aplicación: ${err.message}`, err.stack);
+    res.status(500).json({ error: 'Ocurrió un error en el servidor' });
 });
 
 // 404
 app.use((req, res) => {
-  logger.warn(`Ruta no encontrada: ${req.method} ${req.originalUrl}`);
-  res.status(404).json({ error: 'Ruta no encontrada' });
+    logger.warn(`Ruta no encontrada: ${req.method} ${req.originalUrl}`);
+    res.status(404).json({ error: 'Ruta no encontrada' });
 });
 
-// ⚠️ Importante: SIN app.listen aquí (Vercel serverless)
-// Exportamos la app para que la use el handler de /api
+
 export default app;
