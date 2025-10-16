@@ -1384,3 +1384,5 @@
 {"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-14 19:30:31"}
 {"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-14 19:30:31"}
 {"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-14 19:30:33"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-16 16:43:07"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-16 16:43:09"}
