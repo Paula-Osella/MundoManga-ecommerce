@@ -1,4 +1,5 @@
 // src/services/email.services.js
+import 'dotenv/config';
 import { Resend } from 'resend';
 import config from '../config/config.js';
 import { purchaseTicketTemplate } from '../views/templates/purchaseTicketTemplate.js';
@@ -6,17 +7,20 @@ import { changePasswordTemplate } from '../views/templates/changePasswordTemplat
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Remitente por defecto: 1) FROM_EMAIL 2) fallback seguro de Resend
+const DEFAULT_FROM = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+
 // ✅ Transporter “compat” para no tocar tus controladores
 export const transporter = {
   /**
    * Emula nodemailer.sendMail usando Resend
-   * @param {{ from:string, to:string|string[], subject:string, html:string }} mail
+   * @param {{ from?:string, to:string|string[], subject:string, html:string }} mail
    */
   async sendMail(mail) {
     const toList = Array.isArray(mail.to) ? mail.to : [mail.to];
 
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_EMAIL  ||  mail.from  ||  config.mailUser,
+      from: mail.from || DEFAULT_FROM, // siempre definido
       to: toList,
       subject: mail.subject,
       html: mail.html,
@@ -24,13 +28,11 @@ export const transporter = {
     });
 
     if (error) {
-      // Imitamos el comportamiento de nodemailer para que tus logs sigan teniendo sentido
       const err = new Error(error.message || 'Resend send error');
       err.code = error.name || 'RESEND_ERROR';
       throw err;
     }
 
-    // Respuesta “similar” a nodemailer
     return {
       accepted: toList,
       messageId: data?.id || 'resend-message',
@@ -39,9 +41,9 @@ export const transporter = {
   }
 };
 
-// ⬇️ Config del mail de compra (se mantiene igual, solo “from” usa tu config/env)
+// ⬇️ Config del mail de compra (usa DEFAULT_FROM)
 export const gmailConfig = (ticket, email, items = []) => ({
-  from: process.env.FROM_EMAIL || config.mailUser,
+  from: DEFAULT_FROM,
   to: email,
   subject: 'Purchase Ticket',
   html: purchaseTicketTemplate(ticket, email, items)
@@ -53,9 +55,9 @@ export const sendMailGmail = async (ticket, email, items = []) => {
   return transporter.sendMail(mailOptions);
 };
 
-// ⬇️ Mail de cambio de contraseña (igual lógica)
+// ⬇️ Mail de cambio de contraseña (usa DEFAULT_FROM)
 export const gmailChangePasswordConfig = (resetLink, email) => ({
-  from: process.env.FROM_EMAIL || config.mailUser,
+  from: DEFAULT_FROM,
   to: email,
   subject: 'Change Password',
   html: changePasswordTemplate(resetLink)
