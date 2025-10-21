@@ -1402,3 +1402,10 @@
 {"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-16 19:28:08"}
 {"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-16 19:28:08"}
 {"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-16 19:28:09"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-20 20:33:47"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-20 20:33:48"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-20 20:33:49"}
+{"level":"warn","message":"Ruta no encontrada: GET /favicon.ico","timestamp":"2025-10-20 20:33:52"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-20 21:48:42"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-20 21:48:43"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-20 21:48:44"}

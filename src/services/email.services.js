@@ -7,7 +7,8 @@ import { changePasswordTemplate } from "../views/templates/changePasswordTemplat
 export const transporter = createTransport({
   service: "gmail",
   secure: true,
-  port: 587,
+  host: "smtp.gmail.com",
+  port: 465,
   auth: { user: config.mailUser, pass: config.mailPass },
 });
 
