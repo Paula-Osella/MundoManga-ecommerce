@@ -16,7 +16,7 @@ export const transporter = {
     const toList = Array.isArray(mail.to) ? mail.to : [mail.to];
 
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_EMAIL || mail.from || config.mailUser,
+      from: process.env.FROM_EMAIL  ||  mail.from  ||  config.mailUser,
       to: toList,
       subject: mail.subject,
       html: mail.html,
