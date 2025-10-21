@@ -81,11 +81,7 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
 });
 
-/* ========= Server local (protegido para Vercel) =========
-   - En local y en plataformas tipo Render/railway: levanta puerto.
-   - En Vercel (serverless) NO se debe ejecutar app.listen.
-   Vercel expone la variable de entorno VERCEL="1".
-*/
+
 const PORT = process.env.PORT || config.port || 8080;
 if (!process.env.VERCEL) {
   app.listen(PORT, () => {
