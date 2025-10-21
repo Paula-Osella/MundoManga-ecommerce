@@ -670,31 +670,6 @@ form button[type="submit"]:hover {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* ==================== Toast ==================== */
-.welcome-toast {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: var(--secondary-color);
-    color: var(--text-light);
-    padding: 15px 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    font-size: 1.1rem;
-    font-weight: bold;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-20px);
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out, visibility 0.5s linear;
-}
-
-.welcome-toast.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
 /* ===== Toast global (éxitos/errores) ===== */
 .app-toast {
   position: fixed;

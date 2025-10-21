@@ -1412,3 +1412,25 @@
 {"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-21 17:43:26"}
 {"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-21 17:43:26"}
 {"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-21 17:43:27"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-21 19:20:41"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-21 19:20:42"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-21 19:20:43"}
+{"level":"warn","message":"Ruta no encontrada: GET /favicon.ico","timestamp":"2025-10-21 19:20:44"}
+{"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-10-21 19:21:14"}
+{"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-10-21 19:22:18"}
+{"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-10-21 19:22:33"}
+{"level":"warn","message":"Ruta no encontrada: GET /.well-known/appspecific/com.chrome.devtools.json","timestamp":"2025-10-21 19:22:38"}
+{"level":"warn","message":"Ruta no encontrada: GET /.well-known/appspecific/com.chrome.devtools.json","timestamp":"2025-10-21 19:22:40"}
+{"level":"warn","message":"Ruta no encontrada: GET /.well-known/appspecific/com.chrome.devtools.json","timestamp":"2025-10-21 19:22:47"}
+{"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-10-21 19:22:48"}
+{"level":"warn","message":"Ruta no encontrada: GET /.well-known/appspecific/com.chrome.devtools.json","timestamp":"2025-10-21 19:23:42"}
+{"level":"warn","message":"Ruta no encontrada: GET /.well-known/appspecific/com.chrome.devtools.json","timestamp":"2025-10-21 19:23:48"}
+{"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-10-21 19:23:48"}
+{"level":"warn","message":"Ruta no encontrada: GET /.well-known/appspecific/com.chrome.devtools.json","timestamp":"2025-10-21 19:24:25"}
+{"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-10-21 19:24:26"}
+{"level":"warn","message":"Ruta no encontrada: GET /.well-known/appspecific/com.chrome.devtools.json","timestamp":"2025-10-21 19:24:27"}
+{"level":"warn","message":"Ruta no encontrada: GET /.well-known/appspecific/com.chrome.devtools.json","timestamp":"2025-10-21 19:24:32"}
+{"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-10-21 19:24:32"}
+{"level":"warn","message":"Ruta no encontrada: GET /.well-known/appspecific/com.chrome.devtools.json","timestamp":"2025-10-21 19:24:49"}
+{"level":"warn","message":"Ruta no encontrada: GET /.well-known/appspecific/com.chrome.devtools.json","timestamp":"2025-10-21 19:24:53"}
+{"level":"info","message":"Carrito encontrado en DAO con ID: 6887de57816591de863dbd2d","timestamp":"2025-10-21 19:24:54"}
