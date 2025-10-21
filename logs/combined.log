@@ -1409,3 +1409,6 @@
 {"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-20 21:48:42"}
 {"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-20 21:48:43"}
 {"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-20 21:48:44"}
+{"level":"info","message":"Instancia de CartRepository creada.","timestamp":"2025-10-21 17:43:26"}
+{"level":"info","message":"Servidor ejecutándose en http://localhost:8080","timestamp":"2025-10-21 17:43:26"}
+{"level":"info","message":"Base de datos conectada exitosamente","timestamp":"2025-10-21 17:43:27"}

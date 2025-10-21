@@ -1,3 +1,4 @@
+// src/app.js
 import express from 'express';
 import router from './routes/router.js';
 import homeviewRouter from './routes/homeViewRouter.js';
@@ -17,32 +18,13 @@ import { sessionLocals } from './middlewares/sessionLocals.js';
 
 const app = express();
 
-// Parsers y estáticos
+/* ========= Parsers y estáticos ========= */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
 
-// Auth + logs
-app.use(authMiddleware);
-app.use(morganMiddleware);
-app.use(sessionLocals);
-
-// Handlebars
-app.engine(
-  'handlebars',
-  handlebars.engine({
-    helpers: {
-      eq: function (a, b) {
-        return a === b;
-      },
-    },
-  })
-);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'handlebars');
-
-// Sesiones (MongoStore)
+/* ========= Sesiones (antes que auth/sessionLocals) ========= */
 const storeConfig = {
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URL,
@@ -56,38 +38,59 @@ const storeConfig = {
 };
 app.use(session(storeConfig));
 
-// Passport
+/* ========= Passport (después de session) ========= */
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Conexión a la base de datos
+/* ========= Logs + Middlewares que usan req.session/req.user ========= */
+app.use(morganMiddleware);
+app.use(authMiddleware);
+app.use(sessionLocals);
+
+/* ========= Handlebars ========= */
+app.engine(
+  'handlebars',
+  handlebars.engine({
+    helpers: {
+      eq: (a, b) => a === b,
+    },
+  })
+);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'handlebars');
+
+/* ========= DB ========= */
 initMongoDB()
   .then(() => logger.info('Base de datos conectada exitosamente'))
   .catch((error) => logger.error('Error al conectar a la base de datos:', error));
 
-// 👉 Home simple para portfolio (redirige a productos)
+/* ========= Rutas ========= */
 app.get('/', (req, res) => res.redirect('/products'));
-
-// Rutas
 app.use('/', homeviewRouter); // vistas
 app.use('/', router);         // apis + otros
 
-// Manejo de errores
+/* ========= Manejo de errores ========= */
 app.use((err, req, res, next) => {
   logger.error(`Error en la aplicación: ${err.message}`, err.stack);
   res.status(500).json({ error: 'Ocurrió un error en el servidor' });
 });
 
-// 404
+/* ========= 404 ========= */
 app.use((req, res) => {
   logger.warn(`Ruta no encontrada: ${req.method} ${req.originalUrl}`);
   res.status(404).json({ error: 'Ruta no encontrada' });
 });
 
-// 🚀 Servidor (Render usa process.env.PORT)
+/* ========= Server local (protegido para Vercel) =========
+   - En local y en plataformas tipo Render/railway: levanta puerto.
+   - En Vercel (serverless) NO se debe ejecutar app.listen.
+   Vercel expone la variable de entorno VERCEL="1".
+*/
 const PORT = process.env.PORT || config.port || 8080;
-app.listen(PORT, () => {
-  logger.info(`Servidor ejecutándose en http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    logger.info(`Servidor ejecutándose en http://localhost:${PORT}`);
+  });
+}
 
 export default app;
